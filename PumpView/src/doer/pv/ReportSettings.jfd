@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_301" class="java.beans.XMLDecoder">
+ <object class="com.jformdesigner.model.FormModel">
+  <void property="contentType">
+   <string>form/swing</string>
+  </void>
+  <void property="root">
+   <object class="com.jformdesigner.model.FormRoot">
+    <void method="add">
+     <object class="com.jformdesigner.model.FormWindow">
+      <string>javax.swing.JDialog</string>
+      <object class="com.jformdesigner.model.FormLayoutManager">
+       <class>info.clearthought.layout.TableLayout</class>
+       <void method="setProperty">
+        <string>$columnSpecs</string>
+        <string>10.0, fill, 10.0</string>
+       </void>
+       <void method="setProperty">
+        <string>$rowSpecs</string>
+        <string>10.0, pref, 5.0</string>
+       </void>
+       <void method="setProperty">
+        <string>hGap</string>
+        <int>5</int>
+       </void>
+       <void method="setProperty">
+        <string>vGap</string>
+        <int>5</int>
+       </void>
+      </object>
+      <void method="setProperty">
+       <string>title</string>
+       <string>Doer PumpView: Report Settings</string>
+      </void>
+      <void method="setProperty">
+       <string>font</string>
+       <object class="java.awt.Font">
+        <string>Arial</string>
+        <int>0</int>
+        <int>12</int>
+       </object>
+      </void>
+      <void method="setProperty">
+       <string>modal</string>
+       <boolean>true</boolean>
+      </void>
+      <void method="setProperty">
+       <string>resizable</string>
+       <boolean>false</boolean>
+      </void>
+      <void method="setProperty">
+       <string>$locationPolicy</string>
+       <int>1</int>
+      </void>
+      <void method="add">
+       <object class="com.jformdesigner.model.FormContainer">
+        <string>javax.swing.JPanel</string>
+        <object class="com.jformdesigner.model.FormLayoutManager">
+         <class>info.clearthought.layout.TableLayout</class>
+         <void method="setProperty">
+          <string>$columnSpecs</string>
+          <string>fill, fill, fill</string>
+         </void>
+         <void method="setProperty">
+          <string>$rowSpecs</string>
+          <string>pref, pref, pref, pref, pref, 5.0, pref</string>
+         </void>
+         <void method="setProperty">
+          <string>hGap</string>
+          <int>5</int>
+         </void>
+         <void method="setProperty">
+          <string>vGap</string>
+          <int>5</int>
+         </void>
+        </object>
+        <void method="setProperty">
+         <string>border</string>
+         <object class="javax.swing.border.TitledBorder">
+          <null/>
+          <string>Color Settings [All Assembly Lines]</string>
+          <int>2</int>
+          <int>0</int>
+          <object class="java.awt.Font">
+           <string>Arial</string>
+           <int>1</int>
+           <int>14</int>
+          </object>
+          <object class="java.awt.Color" field="blue"/>
+         </object>
+        </void>
+        <void property="name">
+         <string>pnlClr</string>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Outline</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object class="java.awt.Font" id="Font0">
+            <string>Arial</string>
+            <int>1</int>
+            <int>12</int>
+           </object>
+          </void>
+          <void property="name">
+           <string>label9</string>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>opaque</string>
+           <boolean>true</boolean>
+          </void>
+          <void method="setProperty">
+           <string>background</string>
+           <object class="java.awt.Color" field="black"/>
+          </void>
+          <void method="setProperty">
+           <string>cursor</string>
+           <object class="java.awt.Cursor" id="Cursor0">
+            <int>12</int>
+           </object>
+          </void>
+          <void property="name">
+           <string>lblOutline</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.MouseListener</string>
+            <string>mouseClicked</string>
+            <string>lblOutlineMouseClicked</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Reset</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object class="java.awt.Font" id="Font1">
+            <string>Arial</string>
+            <int>0</int>
+            <int>12</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Reset to default outline color</string>
+          </void>
+          <void property="name">
+           <string>cmdReset1</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdReset1ActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Report Header</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font0"/>
+          </void>
+          <void property="name">
+           <string>label5</string>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>opaque</string>
+           <boolean>true</boolean>
+          </void>
+          <void method="setProperty">
+           <string>background</string>
+           <object class="java.awt.Color" field="black"/>
+          </void>
+          <void method="setProperty">
+           <string>cursor</string>
+           <object idref="Cursor0"/>
+          </void>
+          <void property="name">
+           <string>lblHeader</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.MouseListener</string>
+            <string>mouseClicked</string>
+            <string>lblHeaderMouseClicked</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Reset</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font1"/>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Reset to default header color</string>
+          </void>
+          <void property="name">
+           <string>cmdReset2</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdReset2ActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>1</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Labels</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font0"/>
+          </void>
+          <void property="name">
+           <string>label6</string>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>opaque</string>
+           <boolean>true</boolean>
+          </void>
+          <void method="setProperty">
+           <string>background</string>
+           <object class="java.awt.Color" field="black"/>
+          </void>
+          <void method="setProperty">
+           <string>cursor</string>
+           <object idref="Cursor0"/>
+          </void>
+          <void property="name">
+           <string>lblLabel</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.MouseListener</string>
+            <string>mouseClicked</string>
+            <string>lblLabelMouseClicked</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>2</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Reset</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font1"/>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Reset to default label color</string>
+          </void>
+          <void property="name">
+           <string>cmdReset3</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdReset3ActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>2</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Declared Values</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font0"/>
+          </void>
+          <void property="name">
+           <string>label7</string>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>3</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>opaque</string>
+           <boolean>true</boolean>
+          </void>
+          <void method="setProperty">
+           <string>background</string>
+           <object class="java.awt.Color" field="black"/>
+          </void>
+          <void method="setProperty">
+           <string>cursor</string>
+           <object idref="Cursor0"/>
+          </void>
+          <void property="name">
+           <string>lblDeclared</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.MouseListener</string>
+            <string>mouseClicked</string>
+            <string>lblDeclaredMouseClicked</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>3</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Reset</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font1"/>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Reset to default declared values color</string>
+          </void>
+          <void property="name">
+           <string>cmdReset4</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdReset4ActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>3</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Actual Values</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font0"/>
+          </void>
+          <void property="name">
+           <string>label8</string>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>4</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JLabel</string>
+          <void method="setProperty">
+           <string>opaque</string>
+           <boolean>true</boolean>
+          </void>
+          <void method="setProperty">
+           <string>background</string>
+           <object class="java.awt.Color" field="black"/>
+          </void>
+          <void method="setProperty">
+           <string>cursor</string>
+           <object idref="Cursor0"/>
+          </void>
+          <void property="name">
+           <string>lblActual</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.MouseListener</string>
+            <string>mouseClicked</string>
+            <string>lblActualMouseClicked</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>4</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>1</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Reset</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font1"/>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Reset to default actual values color</string>
+          </void>
+          <void property="name">
+           <string>cmdReset5</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdReset5ActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>4</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>Save</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object class="java.awt.Font" id="Font2">
+            <string>Arial</string>
+            <int>0</int>
+            <int>14</int>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>icon</string>
+           <object class="com.jformdesigner.model.SwingIcon">
+            <int>0</int>
+            <string>/img/save.PNG</string>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Click on this to save the changes made above in all tabs</string>
+          </void>
+          <void method="setProperty">
+           <string>mnemonic</string>
+           <int>83</int>
+          </void>
+          <void property="name">
+           <string>cmdSave</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdSaveActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>6</int>
+          </void>
+          <void method="setProperty">
+           <string>gridWidth</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+        <void method="add">
+         <object class="com.jformdesigner.model.FormComponent">
+          <string>javax.swing.JButton</string>
+          <void method="setProperty">
+           <string>text</string>
+           <string>&lt;html&gt;Close&amp;nbsp;&amp;nbsp&lt;font size=-2&gt;[Esc]&lt;/html&gt;</string>
+          </void>
+          <void method="setProperty">
+           <string>font</string>
+           <object idref="Font2"/>
+          </void>
+          <void method="setProperty">
+           <string>icon</string>
+           <object class="com.jformdesigner.model.SwingIcon">
+            <int>0</int>
+            <string>/img/exit.PNG</string>
+           </object>
+          </void>
+          <void method="setProperty">
+           <string>toolTipText</string>
+           <string>Click on this to close this window</string>
+          </void>
+          <void property="name">
+           <string>cmdExit</string>
+          </void>
+          <void method="addEvent">
+           <object class="com.jformdesigner.model.FormEvent">
+            <string>java.awt.event.ActionListener</string>
+            <string>actionPerformed</string>
+            <string>cmdExitActionPerformed</string>
+            <boolean>false</boolean>
+           </object>
+          </void>
+         </object>
+         <object class="com.jformdesigner.model.FormLayoutConstraints">
+          <class>com.jformdesigner.runtime.TableConstraints</class>
+          <void method="setProperty">
+           <string>gridY</string>
+           <int>6</int>
+          </void>
+          <void method="setProperty">
+           <string>gridX</string>
+           <int>2</int>
+          </void>
+         </object>
+        </void>
+       </object>
+       <object class="com.jformdesigner.model.FormLayoutConstraints">
+        <class>com.jformdesigner.runtime.TableConstraints</class>
+        <void method="setProperty">
+         <string>gridY</string>
+         <int>1</int>
+        </void>
+        <void method="setProperty">
+         <string>gridX</string>
+         <int>1</int>
+        </void>
+       </object>
+      </void>
+      <void property="name">
+       <string>this</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>0</int>
+        <int>0</int>
+       </object>
+      </void>
+      <void method="setProperty">
+       <string>size</string>
+       <object class="java.awt.Dimension">
+        <int>450</int>
+        <int>275</int>
+       </object>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="com.jformdesigner.model.FormNonVisual">
+      <string>javax.swing.ButtonGroup</string>
+      <void property="name">
+       <string>buttonGroup1</string>
+      </void>
+     </object>
+     <object class="com.jformdesigner.model.FormLayoutConstraints">
+      <null/>
+      <void method="setProperty">
+       <string>location</string>
+       <object class="java.awt.Point">
+        <int>5</int>
+        <int>345</int>
+       </object>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

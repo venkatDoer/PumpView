@@ -1,0 +1,691 @@
+/*
+ * Created by JFormDesigner on Thu Nov 08 12:01:44 IST 2012
+ */
+
+package doer.pv;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+
+import org.jfree.ui.FilesystemFilter;
+
+import doer.lic.LicenseFile;
+
+import info.clearthought.layout.*;
+
+/**
+ * @author VENKATESAN SELVARAJ
+ */
+public class OtherSettings extends JDialog {
+	// custom variables
+	HashMap<String, String> refList = new HashMap<String, String>();
+	
+	public OtherSettings(Frame owner) {
+		super(owner);
+		initComponents();
+		customInit();
+	}
+
+	public OtherSettings(Dialog owner) {
+		super(owner);
+		initComponents();
+	}
+
+	private void cmdSaveActionPerformed() {
+		// save the changes
+		int res = JOptionPane.showConfirmDialog(this, "Save the changes?");
+		if ( res != 0 ) {
+			return;
+		}
+		this.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		
+		// reports
+		Configuration.REP_SHOW_APP_WMARK = chkWMark.isSelected()?"1":"0";
+		Configuration.REP_SHOW_TESTER_NAME = chkTester.isSelected()?"1":"0";
+		Configuration.REP_SHOW_VERIFIED_BY = chkVerifBy.isSelected()?"1":"0";
+		Configuration.REP_SHOW_CASING_TEST = chkCasing.isSelected()?"1":"0";
+		Configuration.REP_CASTING_TEST_MIN = txtCastingMin.getText();
+		Configuration.REP_SHOW_MOT_EFF = chkMotEff.isSelected()?"1":"0";
+		String tmpOldPE = Configuration.REP_SHOW_PUMP_EFF;
+		Configuration.REP_SHOW_PUMP_EFF = chkPumpEff.isSelected()?"1":"0";
+		Configuration.REP_SHOW_CUST_REP = chkCustRep.isSelected()?"1":"0";
+		Configuration.REP_SHOW_NOTES = chkNote.isSelected()?"1":"0";
+		Configuration.REP_NOTES_HEADING = txtNoteHead.getText();
+		Configuration.REP_NOTES_TEXT = txtNoteText.getText();
+		Configuration.REP_SHOW_MI_FOR_8472 = chkMIFor8472.isSelected()?"1":"0";
+		Configuration.saveConfigValues("REP_SHOW_APP_WMARK","REP_SHOW_TESTER_NAME","REP_SHOW_VERIFIED_BY","REP_SHOW_CASING_TEST","REP_CASTING_TEST_MIN", "REP_SHOW_MOT_EFF", "REP_SHOW_PUMP_EFF", "REP_SHOW_CUST_REP", "REP_SHOW_NOTES", "REP_NOTES_HEADING", "REP_NOTES_TEXT", "REP_SHOW_MI_FOR_8472");
+		
+		// isi ref no.
+		// construct new list & save it in both db & license file if it got changed
+		String newLicRefList = "";
+		for(int i=0; i< cmbIS.getItemCount(); i++) {
+			newLicRefList += (refList.containsKey(cmbIS.getItemAt(i))?refList.get(cmbIS.getItemAt(i)):"") + ",";
+		}
+		if (newLicRefList.length()>1) {
+			newLicRefList = newLicRefList.substring(0, newLicRefList.length()-1); // remove , at the end
+		} else {
+			newLicRefList = "";
+		}
+		if (!newLicRefList.equals(Configuration.LICENCEE_ISI_REF_LIST)) {
+			Configuration.LICENCEE_ISI_REF_LIST = newLicRefList;
+			Configuration.LICENCEE_ISI_REF = refList.get(Configuration.LAST_USED_ISSTD);
+			Configuration.saveCommonConfigValues("LICENCEE_ISI_REF_LIST","LICENCEE_ISI_REF");
+			
+			try {
+				LicenseFile lFile = new LicenseFile(Configuration.APP_DIR + Configuration.CONFIG_DIR + Configuration.CONFIG_FILE_LIC);
+				lFile.setISRefNo(newLicRefList);
+				lFile.rewriteFile();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Error updating license file:" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		// automatic backup
+		Configuration.LAST_USED_BACKUP_LOCATION = txtBkLoc.getText();
+		Configuration.saveCommonConfigValues("LAST_USED_BACKUP_LOCATION");
+		
+		if (!cmbDuration.getSelectedItem().toString().equals(Configuration.LAST_USED_BACKUP_DURATION)) {
+			Configuration.LAST_USED_BACKUP_DURATION = cmbDuration.getSelectedItem().toString();
+			
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, cmbDuration.getSelectedIndex()+1);
+			Date dt = cal.getTime();
+			
+			Configuration.NEXT_BACKUP_DATE = reqDtFormat.format(dt);
+			lblNext.setText(Configuration.NEXT_BACKUP_DATE);
+			
+			Configuration.saveCommonConfigValues("LAST_USED_BACKUP_DURATION", "NEXT_BACKUP_DATE");
+		}
+		
+		//db name
+		String dbMsg = "";
+		if (!Configuration.APP_DB_NAME.equals(txtDB.getText())) {
+			try {
+				Configuration.APP_DB_NAME = txtDB.getText();
+				LicenseFile lFile = new LicenseFile(Configuration.APP_DIR + Configuration.CONFIG_DIR + Configuration.CONFIG_FILE_LIC);
+				lFile.setDbName(Configuration.APP_DB_NAME);
+				lFile.rewriteFile();
+				dbMsg = "\nNote:Database change will be effective only up on relogin to application";
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Error updating DB name:" + e.getMessage());
+			}
+		}
+		
+		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		JOptionPane.showMessageDialog(this, "Changes are saved successfully!" + dbMsg); 
+		
+		// warn about dependancy when enabling pump eff
+		if (!tmpOldPE.equals(Configuration.REP_SHOW_PUMP_EFF) && Configuration.REP_SHOW_PUMP_EFF.equals("1")) {
+			JOptionPane.showMessageDialog(this, "Wait! As you have enabled pump efficiency, please ensure to configure 'motor efficiency' in choose pump screen", "Warning", JOptionPane.WARNING_MESSAGE); 
+		}
+	}
+
+	private void cmdExitActionPerformed() {
+		this.setVisible(false);
+	}
+
+	private void cmdBackupActionPerformed() {
+		// on demand back up
+		try {
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			Configuration.backupData(txtBkLoc.getText());
+			Configuration.LAST_BACKUP_DATE = reqDtFormat.format(Calendar.getInstance().getTime());
+			Configuration.saveCommonConfigValues("LAST_BACKUP_DATE");
+			lblDate.setText(Configuration.LAST_BACKUP_DATE);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	}
+
+	private void cmdChangeActionPerformed() {
+		JFileChooser fileDlg = new JFileChooser();
+		fileDlg.setFileSelectionMode(1); // directories only
+		fileDlg.setDialogTitle("Choose backup folder");
+		fileDlg.showOpenDialog(this);
+		File selFile = fileDlg.getSelectedFile();
+		if (selFile == null) {
+			return;
+		} else {
+			txtBkLoc.setText(selFile.getAbsolutePath());
+			
+		}
+	}
+
+	private void cmdChangeDBActionPerformed() {
+		JOptionPane.showMessageDialog (this, "WARNING:Changing current database will affect configuration and test data (after relogin) based on new database you choose");
+		JFileChooser fileDlg = new JFileChooser();
+		fileDlg.setFileFilter(new FilesystemFilter("db", "PumpViewPro Database (*.db)"));
+		fileDlg.setDialogTitle("Choose Database");
+		fileDlg.showOpenDialog(this);
+		File selFile = fileDlg.getSelectedFile();
+		if (selFile == null) {
+			return;
+		} else if (!selFile.getName().endsWith(".db")){
+			JOptionPane.showMessageDialog(this, "Invalid database file. Please try again!","Error", JOptionPane.ERROR_MESSAGE);
+		} else {
+			txtDB.setText(selFile.getAbsolutePath());
+		}
+	}
+
+	private void cmbISActionPerformed() {
+		txtISIRef.setText(refList.get(cmbIS.getSelectedItem().toString()));
+	}
+
+	private void txtISIRefFocusLost() {
+		refList.put(cmbIS.getSelectedItem().toString(), txtISIRef.getText().trim());
+	}
+
+	private void chkNoteActionPerformed() {
+		if (chkNote.isSelected()) {
+			lblNoteHead.setEnabled(true);
+			lblNoteText.setEnabled(true);
+			txtNoteHead.setEnabled(true);
+			txtNoteText.setEnabled(true);
+		} else {
+			lblNoteHead.setEnabled(false);
+			lblNoteText.setEnabled(false);
+			txtNoteHead.setEnabled(false);
+			txtNoteText.setEnabled(false);		
+		}
+	}
+
+	private void chkPumpEffItemStateChanged() {
+		if (Configuration.LAST_USED_ISSTD.startsWith("IS 8034:") || Configuration.LAST_USED_ISSTD.startsWith("IS 14220:") || Configuration.LAST_USED_ISSTD.startsWith("IS 6595:")) {
+			chkMotEff.setEnabled(false);
+			chkMotEff.setSelected(true);
+		} else {
+			if (chkPumpEff.isSelected()) {
+				chkMotEff.setEnabled(true);
+				chkMotEff.setSelected(Configuration.REP_SHOW_MOT_EFF.equals("1"));
+			} else {
+				chkMotEff.setEnabled(false);
+				chkMotEff.setSelected(false);
+			}
+		}
+	}
+
+	private void initComponents() {
+		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+		tabSet = new JTabbedPane();
+		pnlRep = new JPanel();
+		chkWMark = new JCheckBox();
+		chkCasing = new JCheckBox();
+		txtCastingMin = new JTextField();
+		chkTester = new JCheckBox();
+		chkPumpEff = new JCheckBox();
+		chkVerifBy = new JCheckBox();
+		chkMotEff = new JCheckBox();
+		chkNote = new JCheckBox();
+		chkMIFor8472 = new JCheckBox();
+		chkCustRep = new JCheckBox();
+		lblNoteHead = new JLabel();
+		txtNoteHead = new JTextField();
+		lblNoteText = new JLabel();
+		txtNoteText = new JTextField();
+		separator1 = new JSeparator();
+		label5 = new JLabel();
+		txtISIRef = new JTextField();
+		label4 = new JLabel();
+		cmbIS = new JComboBox();
+		label13 = new JLabel();
+		pnlBackup = new JPanel();
+		label6 = new JLabel();
+		cmbDuration = new JComboBox();
+		label8 = new JLabel();
+		label7 = new JLabel();
+		label9 = new JLabel();
+		txtBkLoc = new JTextField();
+		cmdChange = new JButton();
+		label10 = new JLabel();
+		lblDate = new JLabel();
+		cmdBackup = new JButton();
+		label11 = new JLabel();
+		lblNext = new JLabel();
+		pnlDB = new JPanel();
+		label12 = new JLabel();
+		txtDB = new JTextField();
+		cmdChangeDB = new JButton();
+		cmdSave = new JButton();
+		cmdExit = new JButton();
+
+		//======== this ========
+		setTitle("Doer PumpView: Other Settings");
+		setFont(new Font("Arial", Font.PLAIN, 12));
+		setModal(true);
+		setResizable(false);
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new TableLayout(new double[][] {
+			{10, TableLayout.FILL, TableLayout.FILL, 10},
+			{10, TableLayout.PREFERRED, TableLayout.PREFERRED, 5}}));
+		((TableLayout)contentPane.getLayout()).setHGap(5);
+		((TableLayout)contentPane.getLayout()).setVGap(5);
+
+		//======== tabSet ========
+		{
+			tabSet.setFont(new Font("Arial", Font.PLAIN, 14));
+
+			//======== pnlRep ========
+			{
+				pnlRep.setBorder(new TitledBorder(null, "Report []", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+					new Font("Arial", Font.BOLD, 14), Color.blue));
+				pnlRep.setLayout(new TableLayout(new double[][] {
+					{5, TableLayout.FILL, TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL, TableLayout.FILL},
+					{5, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 5, TableLayout.PREFERRED}}));
+				((TableLayout)pnlRep.getLayout()).setHGap(5);
+				((TableLayout)pnlRep.getLayout()).setVGap(5);
+
+				//---- chkWMark ----
+				chkWMark.setText("Show Application Watermark");
+				chkWMark.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkWMark, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkCasing ----
+				chkCasing.setText("Show Hydrostatic Pressure Test");
+				chkCasing.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkCasing, new TableLayoutConstraints(3, 1, 4, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtCastingMin ----
+				txtCastingMin.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtCastingMin.setToolTipText("ISI registration license number of particular ISI standard");
+				txtCastingMin.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtCastingMin, new TableLayoutConstraints(5, 1, 5, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkTester ----
+				chkTester.setText("Show Tester Name In Tested By");
+				chkTester.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkTester, new TableLayoutConstraints(1, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkPumpEff ----
+				chkPumpEff.setText("Show Pump Efficiency In Performance Report");
+				chkPumpEff.setFont(new Font("Arial", Font.BOLD, 12));
+				chkPumpEff.addItemListener(e -> chkPumpEffItemStateChanged());
+				pnlRep.add(chkPumpEff, new TableLayoutConstraints(3, 2, 5, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkVerifBy ----
+				chkVerifBy.setText("Show Verified By");
+				chkVerifBy.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkVerifBy, new TableLayoutConstraints(1, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkMotEff ----
+				chkMotEff.setText("Show Motor Efficiency In Name Plate Details");
+				chkMotEff.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkMotEff, new TableLayoutConstraints(3, 3, 5, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkNote ----
+				chkNote.setText("Show Note");
+				chkNote.setFont(new Font("Arial", Font.BOLD, 12));
+				chkNote.addActionListener(e -> chkNoteActionPerformed());
+				pnlRep.add(chkNote, new TableLayoutConstraints(1, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkMIFor8472 ----
+				chkMIFor8472.setText("Show Motor Input (kW) In Graph & Result For 8472");
+				chkMIFor8472.setFont(new Font("Arial", Font.BOLD, 12));
+				chkMIFor8472.addActionListener(e -> chkNoteActionPerformed());
+				pnlRep.add(chkMIFor8472, new TableLayoutConstraints(3, 4, 5, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkCustRep ----
+				chkCustRep.setText("Show Custom Report Tab");
+				chkCustRep.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkCustRep, new TableLayoutConstraints(1, 5, 3, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- lblNoteHead ----
+				lblNoteHead.setText("Note Heading");
+				lblNoteHead.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(lblNoteHead, new TableLayoutConstraints(1, 6, 1, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtNoteHead ----
+				txtNoteHead.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtNoteHead.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtNoteHead, new TableLayoutConstraints(2, 6, 4, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- lblNoteText ----
+				lblNoteText.setText("Note Text");
+				lblNoteText.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(lblNoteText, new TableLayoutConstraints(1, 7, 1, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtNoteText ----
+				txtNoteText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtNoteText.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtNoteText, new TableLayoutConstraints(2, 7, 4, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(separator1, new TableLayoutConstraints(1, 8, 5, 8, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- label5 ----
+				label5.setText("ISI License Number");
+				label5.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(label5, new TableLayoutConstraints(1, 10, 1, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtISIRef ----
+				txtISIRef.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtISIRef.setToolTipText("ISI registration license number of particular ISI standard");
+				txtISIRef.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtISIRef, new TableLayoutConstraints(2, 10, 2, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- label4 ----
+				label4.setText("For ISI Standard");
+				label4.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(label4, new TableLayoutConstraints(3, 10, 3, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- cmbIS ----
+				cmbIS.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				cmbIS.addActionListener(e -> cmbISActionPerformed());
+				pnlRep.add(cmbIS, new TableLayoutConstraints(4, 10, 4, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- label13 ----
+				label13.setText("[All Assembly Lines]");
+				label13.setFont(new Font("Arial", Font.BOLD, 12));
+				label13.setForeground(Color.blue);
+				pnlRep.add(label13, new TableLayoutConstraints(5, 10, 5, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			}
+			tabSet.addTab("Reports", pnlRep);
+
+			//======== pnlBackup ========
+			{
+				pnlBackup.setBorder(new TitledBorder(null, "Automatic Backup [All Assembly Lines]", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+					new Font("Arial", Font.BOLD, 14), Color.blue));
+				pnlBackup.setLayout(new TableLayout(new double[][] {
+					{5, TableLayout.PREFERRED, 157, 67, TableLayout.FILL, 145, 5},
+					{5, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 5}}));
+				((TableLayout)pnlBackup.getLayout()).setHGap(5);
+				((TableLayout)pnlBackup.getLayout()).setVGap(5);
+
+				//---- label6 ----
+				label6.setText("Backup Test Data And Configuration For Every");
+				label6.setFont(new Font("Arial", Font.BOLD, 12));
+				label6.setIcon(null);
+				pnlBackup.add(label6, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- cmbDuration ----
+				cmbDuration.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 14));
+				cmbDuration.setBackground(Color.white);
+				cmbDuration.setToolTipText("Duration of automatic backup");
+				pnlBackup.add(cmbDuration, new TableLayoutConstraints(3, 1, 3, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- label8 ----
+				label8.setText("Days");
+				label8.setFont(new Font("Arial", Font.BOLD, 12));
+				label8.setIcon(null);
+				pnlBackup.add(label8, new TableLayoutConstraints(4, 1, 4, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- label7 ----
+				label7.setText("Note: Only recent five backups will be retained at any point of time");
+				label7.setFont(new Font("Arial", Font.PLAIN, 12));
+				label7.setIcon(null);
+				pnlBackup.add(label7, new TableLayoutConstraints(1, 2, 4, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- label9 ----
+				label9.setText("Backup Location");
+				label9.setFont(new Font("Arial", Font.BOLD, 12));
+				label9.setIcon(null);
+				pnlBackup.add(label9, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- txtBkLoc ----
+				txtBkLoc.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtBkLoc.setBorder(new LineBorder(Color.lightGray));
+				txtBkLoc.setEditable(false);
+				txtBkLoc.setBackground(new Color(0xf7f7f7));
+				txtBkLoc.setToolTipText("A folder location where backup files are stored");
+				pnlBackup.add(txtBkLoc, new TableLayoutConstraints(2, 3, 4, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- cmdChange ----
+				cmdChange.setText("Change...");
+				cmdChange.setFont(new Font("Arial", Font.PLAIN, 12));
+				cmdChange.setToolTipText("Click on this to change the backup location");
+				cmdChange.addActionListener(e -> cmdChangeActionPerformed());
+				pnlBackup.add(cmdChange, new TableLayoutConstraints(5, 3, 5, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- label10 ----
+				label10.setText("Last Backup Date");
+				label10.setFont(new Font("Arial", Font.BOLD, 12));
+				label10.setIcon(null);
+				pnlBackup.add(label10, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- lblDate ----
+				lblDate.setText("Backup Date");
+				lblDate.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				lblDate.setIcon(null);
+				pnlBackup.add(lblDate, new TableLayoutConstraints(2, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- cmdBackup ----
+				cmdBackup.setText("Take A Backup Now");
+				cmdBackup.setFont(new Font("Arial", Font.PLAIN, 12));
+				cmdBackup.setToolTipText("Click on this to take a back on demand. This does not affect scheduled automatic backups");
+				cmdBackup.addActionListener(e -> cmdBackupActionPerformed());
+				pnlBackup.add(cmdBackup, new TableLayoutConstraints(5, 4, 5, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- label11 ----
+				label11.setText("Next Backup Date");
+				label11.setFont(new Font("Arial", Font.BOLD, 12));
+				label11.setIcon(null);
+				pnlBackup.add(label11, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- lblNext ----
+				lblNext.setText("Backup Date");
+				lblNext.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				lblNext.setIcon(null);
+				pnlBackup.add(lblNext, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+			}
+			tabSet.addTab("Backup", pnlBackup);
+
+			//======== pnlDB ========
+			{
+				pnlDB.setBorder(new TitledBorder(null, "Database [All Assembly Lines]", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+					new Font("Arial", Font.BOLD, 14), Color.blue));
+				pnlDB.setLayout(new TableLayout(new double[][] {
+					{5, TableLayout.PREFERRED, TableLayout.FILL, 145, 5},
+					{5, 23, 23}}));
+				((TableLayout)pnlDB.getLayout()).setHGap(5);
+				((TableLayout)pnlDB.getLayout()).setVGap(5);
+
+				//---- label12 ----
+				label12.setText("Current Database");
+				label12.setFont(new Font("Arial", Font.BOLD, 12));
+				label12.setIcon(null);
+				pnlDB.add(label12, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- txtDB ----
+				txtDB.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtDB.setBorder(new LineBorder(Color.lightGray));
+				txtDB.setEditable(false);
+				txtDB.setBackground(new Color(0xf7f7f7));
+				pnlDB.add(txtDB, new TableLayoutConstraints(2, 1, 3, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- cmdChangeDB ----
+				cmdChangeDB.setText("Change...");
+				cmdChangeDB.setFont(new Font("Arial", Font.PLAIN, 12));
+				cmdChangeDB.addActionListener(e -> cmdChangeDBActionPerformed());
+				pnlDB.add(cmdChangeDB, new TableLayoutConstraints(3, 2, 3, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			}
+			tabSet.addTab("Database", pnlDB);
+		}
+		contentPane.add(tabSet, new TableLayoutConstraints(1, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+		//---- cmdSave ----
+		cmdSave.setText("Save");
+		cmdSave.setFont(new Font("Arial", Font.PLAIN, 14));
+		cmdSave.setIcon(new ImageIcon(getClass().getResource("/img/save.PNG")));
+		cmdSave.setToolTipText("Click on this to save the changes made above in all tabs");
+		cmdSave.setMnemonic('S');
+		cmdSave.addActionListener(e -> cmdSaveActionPerformed());
+		contentPane.add(cmdSave, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+		//---- cmdExit ----
+		cmdExit.setText("<html>Close&nbsp;&nbsp<font size=-2>[Esc]</html>");
+		cmdExit.setFont(new Font("Arial", Font.PLAIN, 14));
+		cmdExit.setIcon(new ImageIcon(getClass().getResource("/img/exit.PNG")));
+		cmdExit.setToolTipText("Click on this to close this window");
+		cmdExit.addActionListener(e -> cmdExitActionPerformed());
+		contentPane.add(cmdExit, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+		pack();
+		setLocationRelativeTo(getOwner());
+		// JFormDesigner - End of component initialization  //GEN-END:initComponents
+	}
+
+	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+	private JTabbedPane tabSet;
+	private JPanel pnlRep;
+	private JCheckBox chkWMark;
+	private JCheckBox chkCasing;
+	private JTextField txtCastingMin;
+	private JCheckBox chkTester;
+	private JCheckBox chkPumpEff;
+	private JCheckBox chkVerifBy;
+	private JCheckBox chkMotEff;
+	private JCheckBox chkNote;
+	private JCheckBox chkMIFor8472;
+	private JCheckBox chkCustRep;
+	private JLabel lblNoteHead;
+	private JTextField txtNoteHead;
+	private JLabel lblNoteText;
+	private JTextField txtNoteText;
+	private JSeparator separator1;
+	private JLabel label5;
+	private JTextField txtISIRef;
+	private JLabel label4;
+	private JComboBox cmbIS;
+	private JLabel label13;
+	private JPanel pnlBackup;
+	private JLabel label6;
+	private JComboBox cmbDuration;
+	private JLabel label8;
+	private JLabel label7;
+	private JLabel label9;
+	private JTextField txtBkLoc;
+	private JButton cmdChange;
+	private JLabel label10;
+	private JLabel lblDate;
+	private JButton cmdBackup;
+	private JLabel label11;
+	private JLabel lblNext;
+	private JPanel pnlDB;
+	private JLabel label12;
+	private JTextField txtDB;
+	private JButton cmdChangeDB;
+	private JButton cmdSave;
+	private JButton cmdExit;
+	// JFormDesigner - End of variables declaration  //GEN-END:variables
+
+	// custom variables and functions
+	private SimpleDateFormat reqDtFormat = new SimpleDateFormat("dd-MM-yyyy");
+	
+	private void customInit() {
+		associateFunctionKeys();
+		
+		// reports
+		pnlRep.setBorder(new TitledBorder(null, "Report Settings [ASSEMBLY LINE:" + Configuration.LINE_NAME + "]", TitledBorder.CENTER, TitledBorder.TOP,
+				new Font("Arial", Font.BOLD, 14), Color.blue));
+		if (Configuration.IS_TRIAL_ON) {
+			chkWMark.setEnabled(false);
+		}
+		
+		/*if (Configuration.LAST_USED_ISSTD.startsWith("IS 8472:")) {
+			chkPumpEff.setEnabled(false);
+		} else { */
+			chkPumpEff.setSelected(Configuration.REP_SHOW_PUMP_EFF.equals("1"));
+		//}
+			
+		chkPumpEffItemStateChanged();
+			
+		chkWMark.setSelected(Configuration.REP_SHOW_APP_WMARK.equals("1"));
+		chkTester.setSelected(Configuration.REP_SHOW_TESTER_NAME.equals("1"));
+		chkVerifBy.setSelected(Configuration.REP_SHOW_VERIFIED_BY.equals("1"));
+		chkCasing.setSelected(Configuration.REP_SHOW_CASING_TEST.equals("1"));
+		txtCastingMin.setText(Configuration.REP_CASTING_TEST_MIN);
+		chkCustRep.setSelected(Configuration.REP_SHOW_CUST_REP.equals("1"));
+		chkNote.setSelected(Configuration.REP_SHOW_NOTES.equals("1"));
+		txtNoteHead.setText(Configuration.REP_NOTES_HEADING);
+		txtNoteText.setText(Configuration.REP_NOTES_TEXT);
+		chkMIFor8472.setSelected(Configuration.REP_SHOW_MI_FOR_8472.equals("1"));
+		chkNoteActionPerformed();
+		
+		
+		// set ISI ref based on ISSTD selection
+		String[]isList = Configuration.ISSTD_LIST.split(",");
+		for(int i=0; i<isList.length; i++) {
+			cmbIS.addItem(isList[i]);
+		}
+		cmbIS.setSelectedItem(Configuration.LAST_USED_ISSTD);
+		
+		String[]licList = Configuration.LICENCEE_ISI_REF_LIST.split(",");
+		for(int i=0; i<licList.length; i++) {
+			refList.put(isList[i], licList[i]);
+		}
+		txtISIRef.setText(Configuration.LICENCEE_ISI_REF);
+		
+		if (!Configuration.USER_IS_ADMIN.equals("1")) {
+			txtISIRef.setEnabled(false);
+		}
+		// load duration
+		for (int i=1; i<=90;i++) {
+			cmbDuration.addItem(i);
+		}
+		cmbDuration.setSelectedItem(Integer.valueOf(Configuration.LAST_USED_BACKUP_DURATION));
+		
+		txtDB.setText(Configuration.APP_DB_NAME);
+		txtDB.setCaretPosition(0);
+		txtBkLoc.setText(Configuration.LAST_USED_BACKUP_LOCATION);
+		txtBkLoc.setCaretPosition(0);
+		lblDate.setText(Configuration.LAST_BACKUP_DATE);
+		lblNext.setText(Configuration.NEXT_BACKUP_DATE);
+	}
+	
+private void associateFunctionKeys() {
+		
+		// associate f4 for save
+		/*String SAVE_ACTION_KEY = "saveAction";
+		Action saveAction = new AbstractAction() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		        cmdSaveActionPerformed();
+		      }
+		    };
+		KeyStroke f4 = KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0);
+		InputMap saveInputMap = cmdSave.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		saveInputMap.put(f4, SAVE_ACTION_KEY);
+		ActionMap saveActionMap = cmdSave.getActionMap();
+		saveActionMap.put(SAVE_ACTION_KEY, saveAction);
+		cmdSave.setActionMap(saveActionMap);*/
+		
+		// associate Esc for exit
+		String CLOSE_ACTION_KEY = "closeAction";
+		Action closeAction = new AbstractAction() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		        cmdExitActionPerformed();
+		      }
+		    };
+		KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		InputMap closeInputMap = cmdExit.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		closeInputMap.put(esc, CLOSE_ACTION_KEY);
+		ActionMap closeActionMap = cmdExit.getActionMap();
+		closeActionMap.put(CLOSE_ACTION_KEY, closeAction);
+		cmdExit.setActionMap(closeActionMap);
+	}
+}

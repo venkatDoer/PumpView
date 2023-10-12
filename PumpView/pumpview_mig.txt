@@ -1,0 +1,79 @@
+// 09-11-2021: Addition of remark field in device_param table
+alter table device_param add column remark text;
+// 17-11-2021: Implementation of endianness in device config
+alter table device add column endianness text default 'MSB First';
+update device set endianness='LSB First' where dev_name='PLC';
+update device_param set reg_type='Holding Float' where reg_type='Holding' and dev_id in (select dev_id from device where dev_name='Power Meter');
+// 17-11-2021: Texmo changes and cleanup
+delete from CONFIG where name in ("LAST_USED_TAIK_ID", "LAST_USED_TAIK_PORT", "LAST_USED_MAGTROL_PORT", "LAST_USED_SELEC_ID", "LAST_USED_SELEC_PORT", "LAST_LIVE_READING", "LAST_USED_SCANNER_PORT");
+alter table pumptype_9079 add column code text; // this is not required
+insert into CONFIG VALUES ('Line 1', 'IS_DB_LOCKED', '0'); /* do for all lines */
+
+
+/* 02-03-2022 code to type and type to desc - DO FOR ALL IS */
+alter table pumptype_9079 add column desc text;
+update pumptype_9079 set desc=type;
+update pumptype_9079 set type=code where code is not null; // this will fail if code column is not there which is expected, ignore it
+delete from config where name="LAST_USED_PUMP_CODE";
+
+/* routine test limits - DO FOR ALL IS */
+create table ROUTINE_LIMITS_9079 (pump_type_id integer, code text, head_ll real, head_ul real, discharge_ll real, discharge_ul real, current_ll real, current_ul real, power_ll real, power_ul real, primary key (pump_type_id, code), foreign key(pump_type_id) references PUMPTYPE_9079 (pump_type_id));
+insert into ROUTINE_LIMITS_9079 (pump_type_id, code, head_ll, current_ul, power_ul)
+select pump_type_id, 'SO', so_head, so_current, so_power from PUMPTYPE_9079;
+insert into ROUTINE_LIMITS_9079 (pump_type_id, code)
+select pump_type_id, 'FO' from PUMPTYPE_9079;
+insert into ROUTINE_LIMITS_9079 (pump_type_id, code)
+select pump_type_id, 'DP' from PUMPTYPE_9079;
+select * from ROUTINE_LIMITS_9079; // to check
+
+/* 13-03-2022 station with recent test details */
+alter table OUTPUT add column recent_test_type text;
+alter table OUTPUT add column recent_test_code text;
+update OUTPUT set pump_type_id=1 where pump_type_id is null;
+create table OUTPUT_9079 as select * from OUTPUT; /* DO FOR ALL IS */
+drop table OUTPUT; /* DO THIS IF EVERYTHING IS OKAY */
+
+/*22-03-2022 station with recent sno */
+alter table OUTPUT_9079 add column recent_pump_sno text;
+alter table OUTPUT_9079 add column recent_motor_sno text;
+
+/*30-08-2022 motor eff data points IS 6595 changes, do this for 8034,14220 */
+create table MOT_EFF_DATA_POINTS_6595 (pump_type_id integer, ip_kw real, op_kw real, eff real, foreign key(pump_type_id) references PUMPTYPE_6595 (pump_type_id));
+
+/*30-11-2022 non isi performance tolerance */
+/* do it for all ISI - ISI numbers are in two places in below query */
+create table NON_ISI_PERF_TOLERANCE_9079 (pump_type_id integer, head_ll real, head_ul real, discharge_ll real, discharge_ul real, current_ll real, current_ul real, power_ll real, power_ul real, eff_ll real, eff_ul real, primary key (pump_type_id), foreign key(pump_type_id) references PUMPTYPE_9079 (pump_type_id));
+
+/* 30-11-2022 auto valve - do for all isi */
+alter table pumptype_9079 add column auto_valve_type text default "H"; 
+alter table TESTNAMES_ROUTINE_9079 add column auto_valve_value real default ""; 
+alter table TESTNAMES_ROUTINE_9079 add column auto_valve_tol real default ""; 
+alter table TESTNAMES_TYPE_9079 add column auto_valve_value real default ""; 
+alter table TESTNAMES_TYPE_9079 add column auto_valve_tol real default ""; 
+/* do the below for all lines and outputs with corresponding plc id as a first value*/
+insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type, remark) values (, 'Valve Control Register', '-1', '', '', 'Holding', 'For automated valve control');
+
+/* 03-07-2023 - switch off pump after test for auto valve - do it for all stations */
+insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type, remark) values (, 'Test Off Coil', '-1', '', '', 'Coil', 'For panel with automatic valve control only');
+
+/* 25-08-2023 - learn and store best input value to position the valve at right place at given head */
+alter table TESTNAMES_ROUTINE_9079 add column auto_valve_learnt_pos real default ""; 
+alter table TESTNAMES_TYPE_9079 add column auto_valve_learnt_pos real default ""; 
+
+// Do this once SQLite version > 
+alter table pumptype_9079 drop column code;
+alter table pumptype_9079 drop column recent_test_sno;
+alter table pumptype_9079 drop column recent_test_type;
+alter table pumptype_9079 drop column recent_test_code;
+alter table pumptype_9079 drop column so_head;
+alter table pumptype_9079 drop column so_current;
+alter table pumptype_9079 drop column so_power;
+alter table pumptype_9079 drop column so_suc_head;
+alter table pumptype_9079 drop column so_suc_current;
+alter table pumptype_9079 drop column so_suc_power;
+alter table pumptype_9079 drop column recent_test_type;
+alter table pumptype_9079 drop column recent_test_code;
+alter table pumptype_9079 drop column recent_test_sno;
+
+
+
