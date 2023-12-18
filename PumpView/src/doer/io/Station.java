@@ -97,7 +97,7 @@ public class Station {
 				paramList.put(curParamNm, new Parameter(curParamNm, res.getString("dev_name"), res.getInt("param_adr"), res.getString("conv_factor"),res.getString("format_text"),res.getString("reg_type")));
 				// add device if not exist already
 				if (!devList.containsKey(res.getString("dev_name"))) {
-					devList.put(res.getString("dev_name"), new Device(res.getString("dev_name"), res.getInt("dev_adr"), res.getString("dev_type"), res.getInt("wc"), res.getString("endianness"), new SerialParameters(res.getString("dev_port"),res.getInt("baud_rt"), res.getInt("fc"), res.getInt("fc"), res.getInt("data_bits"), res.getInt("stop_bits"), res.getInt("parity"), false, 2000), res.getString("ip_cmd"), res.getString("is_in_use").equals("true"), res.getString("is_common_port").equals("true")));
+					devList.put(res.getString("dev_name"), new Device(res.getString("dev_name"), res.getInt("dev_adr"), res.getString("dev_type"), res.getInt("wc"), res.getString("endianness"), new SerialParameters(res.getString("dev_port"),res.getInt("baud_rt"), res.getInt("fc"), res.getInt("fc"), res.getInt("data_bits"), res.getInt("stop_bits"), res.getInt("parity"), false, 2000), res.getString("ip_cmd"), res.getString("is_in_use").equals("true"), res.getString("is_common_port").equals("true"), res.getString("comm_protocol"),res.getString("ip_address"),Integer.parseInt(res.getString("ip_port"))));
 				} // if
 			}
 			

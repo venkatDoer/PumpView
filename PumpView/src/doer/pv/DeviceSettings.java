@@ -23,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import javax.swing.*;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -59,6 +60,8 @@ import jssc.SerialPortList;
  * @author VENKATESAN SELVARAJ
  */
 public class DeviceSettings extends JDialog {
+	private String protocol = null; 
+
 	public DeviceSettings(Frame owner) {
 		super(owner);
 		frmMain = (PumpView) owner;
@@ -161,6 +164,7 @@ public class DeviceSettings extends JDialog {
 					MyResultSet res = db.executeQuery("select * from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId +"' and dev_name='" + devNm + "'" );
 					
 					if (res.next()) {
+						protocol = res.getString("comm_protocol");
 						txtId.setText(res.getString("dev_adr"));
 						cmbPort.setSelectedIndex(0);
 						cmbPort.setSelectedItem(res.getString("dev_port"));
@@ -195,7 +199,15 @@ public class DeviceSettings extends JDialog {
 						cmbEnd.setSelectedItem(res.getString("endianness"));
 						txtIpCmd.setText(res.getString("ip_cmd"));
 						chkNotApp.setSelected(!res.getBoolean("is_in_use"));
+						txtIPAdd.setText(res.getString("ip_address"));
+						txtIPPort.setText(res.getString("ip_port"));
+
 						chkNotAppActionPerformed();
+						if (protocol.equals("RTU")) {
+							rtu();
+						}else {
+							tcpip();
+						}
 					}
 					
 					
@@ -297,54 +309,63 @@ public class DeviceSettings extends JDialog {
 
 	private void cmdSaveDevActionPerformed() {
 		// save the changes
-		if (jtrStation.getSelectionPath() != null) {
-			this.setCursor(waitCursor);
-			String stationId = jtrStation.getSelectionPath().getPathComponent(1).toString();
-			String devNm = jtrStation.getSelectionPath().getLastPathComponent().toString();
-			String stFilter =  chkCommon.isSelected() ? "" : " and station_no='" + stationId + "'";
-			ArrayList<String> paramList = new ArrayList<String>();
-			try {
-				// master
-				// 1. dev id unique for this device
-				db.executeUpdate("update DEVICE set dev_adr='" + txtId.getText().trim() + 
-					"' where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "'");
-				// 2. port is common for all stations of this device or unique for each station
-				db.executeUpdate("update DEVICE set dev_port='" + (cmbPort.getSelectedItem().toString().contains("(Invalid)")?cmbPort.getSelectedItem().toString().substring(0, cmbPort.getSelectedItem().toString().indexOf("(Invalid)")-1): cmbPort.getSelectedItem().toString()) + 
-						"', dev_type='" + (cmbDevTye.getSelectedIndex()==0?"S":cmbDevTye.getSelectedIndex()==1?"M":"HID") + "', baud_rt=" + cmbBaud.getSelectedItem().toString() + ", data_bits=" + cmbDB.getSelectedItem().toString() + ", stop_bits=" + cmbSB.getSelectedItem().toString() + ", parity=" + cmbParity.getSelectedIndex() + ", wc=" + cmbWC.getSelectedIndex() + ", endianness='" + cmbEnd.getSelectedItem().toString()  + 
-						"', fc=0, ip_cmd = '" + txtIpCmd.getText().trim() + "', is_in_use = '" + (chkNotApp.isSelected() ? "false" : "true") + "', is_common_port = '" + (chkCommon.isSelected() ? "true" : "false") +
-						"' where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "'" + stFilter);
-				// detail
-				for(int i=0; i < tblDevCfg.getRowCount(); i++) {
-					if (!tblDevCfg.getValueAt(i, 0).toString().trim().isEmpty()) {
-						try {
-							paramList.add(tblDevCfg.getValueAt(i, 0).toString().trim());
-							db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type, remark) values((select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "'),'" + tblDevCfg.getValueAt(i, 0).toString().trim() + "','" + 
-									tblDevCfg.getValueAt(i, 3).toString().trim() + "','" + tblDevCfg.getValueAt(i, 1).toString().trim() + "','" + tblDevCfg.getValueAt(i, 2).toString().trim() + "','" + tblDevCfg.getValueAt(i, 4).toString().trim() + "','" + tblDevCfg.getValueAt(i, 5).toString().trim() +"')");
-						} catch (SQLException se) {
-							if (se.getMessage().contains("not unique")) {
-								db.executeUpdate("update DEVICE_PARAM set param_adr='" + tblDevCfg.getValueAt(i, 3).toString().trim() + "', conv_factor='" + tblDevCfg.getValueAt(i, 1).toString().trim() + "', format_text='" + tblDevCfg.getValueAt(i, 2).toString().trim()  + "', reg_type='" + tblDevCfg.getValueAt(i, 4).toString().trim() + "', remark='" + tblDevCfg.getValueAt(i, 5).toString().trim() + 
-										"' where param_name='" + tblDevCfg.getValueAt(i, 0).toString().trim() + 
-										"' and dev_id=(select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "')");
-								
-							} else {
-								throw (se);
+		if (rtuRadio.isSelected()||ipRadio.isSelected()) {
+			if (jtrStation.getSelectionPath() != null) {
+				this.setCursor(waitCursor);
+				String stationId = jtrStation.getSelectionPath().getPathComponent(1).toString();
+				String devNm = jtrStation.getSelectionPath().getLastPathComponent().toString();
+				String stFilter =  chkCommon.isSelected() ? "" : " and station_no='" + stationId + "'";
+				ArrayList<String> paramList = new ArrayList<String>();
+				if (rtuRadio.isSelected()) {
+					//protocol
+					protocol = "RTU";
+				}else {
+					protocol = "TCP";
+				}
+				try {
+					// master
+					// 1. dev id unique for this device
+					db.executeUpdate("update DEVICE set dev_adr='" + txtId.getText().trim() + 
+						"' where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "'");
+					// 2. port is common for all stations of this device or unique for each station
+					db.executeUpdate("update DEVICE set dev_port='" + (cmbPort.getSelectedItem().toString().contains("(Invalid)")?cmbPort.getSelectedItem().toString().substring(0, cmbPort.getSelectedItem().toString().indexOf("(Invalid)")-1): cmbPort.getSelectedItem().toString()) + 
+							"', dev_type='" + (cmbDevTye.getSelectedIndex()==0?"S":cmbDevTye.getSelectedIndex()==1?"M":"HID") + "', baud_rt=" + cmbBaud.getSelectedItem().toString() + ", data_bits=" + cmbDB.getSelectedItem().toString() + ", stop_bits=" + cmbSB.getSelectedItem().toString() + ", parity=" + cmbParity.getSelectedIndex() + ", wc=" + cmbWC.getSelectedIndex() + ", endianness='" + cmbEnd.getSelectedItem().toString()  + 
+							"', fc=0, ip_cmd = '" + txtIpCmd.getText().trim() + "', is_in_use = '" + (chkNotApp.isSelected() ? "false" : "true") + "', is_common_port = '" + (chkCommon.isSelected() ? "true" : "false") + "',comm_protocol = '" + protocol + "',ip_address = '" + txtIPAdd.getText().trim() + "',ip_port = '" + txtIPPort.getText().trim() +
+							"' where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "'" + stFilter);
+					// detail
+					for(int i=0; i < tblDevCfg.getRowCount(); i++) {
+						if (!tblDevCfg.getValueAt(i, 0).toString().trim().isEmpty()) {
+							try {
+								paramList.add(tblDevCfg.getValueAt(i, 0).toString().trim());
+								db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type, remark) values((select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "'),'" + tblDevCfg.getValueAt(i, 0).toString().trim() + "','" + 
+										tblDevCfg.getValueAt(i, 3).toString().trim() + "','" + tblDevCfg.getValueAt(i, 1).toString().trim() + "','" + tblDevCfg.getValueAt(i, 2).toString().trim() + "','" + tblDevCfg.getValueAt(i, 4).toString().trim() + "','" + tblDevCfg.getValueAt(i, 5).toString().trim() +"')");
+							} catch (SQLException se) {
+								if (se.getMessage().contains("not unique")) {
+									db.executeUpdate("update DEVICE_PARAM set param_adr='" + tblDevCfg.getValueAt(i, 3).toString().trim() + "', conv_factor='" + tblDevCfg.getValueAt(i, 1).toString().trim() + "', format_text='" + tblDevCfg.getValueAt(i, 2).toString().trim()  + "', reg_type='" + tblDevCfg.getValueAt(i, 4).toString().trim() + "', remark='" + tblDevCfg.getValueAt(i, 5).toString().trim() + 
+											"' where param_name='" + tblDevCfg.getValueAt(i, 0).toString().trim() + 
+											"' and dev_id=(select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "')");
+									
+								} else {
+									throw (se);
+								}
 							}
 						}
 					}
+					// clean-up deleted params
+					db.executeUpdate("delete from DEVICE_PARAM where param_name not in (" + paramList.toString().replace("[", "'").replace("]", "'").replace(", ", "','") + ")" + 
+							" and dev_id=(select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "')");
+				} catch (SQLException se) {
+					JOptionPane.showMessageDialog(this, "Error updating device config:" + se.getMessage());
 				}
-				// clean-up deleted params
-				db.executeUpdate("delete from DEVICE_PARAM where param_name not in (" + paramList.toString().replace("[", "'").replace("]", "'").replace(", ", "','") + ")" + 
-						" and dev_id=(select dev_id from DEVICE where dev_name='" + devNm + "' and line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "')");
-			} catch (SQLException se) {
-				JOptionPane.showMessageDialog(this, "Error updating device config:" + se.getMessage());
+				
+				refreshMainForm();
+				
+				
+				this.setCursor(defCursor);
+				JOptionPane.showMessageDialog(this, "Changes saved successfully");
+			} else {
+				JOptionPane.showMessageDialog(this, "No device selected to save");
 			}
-			
-			refreshMainForm();
-			
-			this.setCursor(defCursor);
-			JOptionPane.showMessageDialog(this, "Changes saved successfully");
-		} else {
-			JOptionPane.showMessageDialog(this, "No device selected to save");
 		}
 	}
 	
@@ -427,6 +448,54 @@ public class DeviceSettings extends JDialog {
 		}
 	}
 
+	private void rtu(){
+		rtuRadio.setSelected(true);
+		if(ipRadio.isSelected()) 
+		{
+			ipRadio.setSelected(false);
+			
+		}
+		txtIPAdd.setEnabled(false);		
+		txtIPPort.setEnabled(false);
+		
+		cmbPort.setEnabled(true);
+		cmbBaud.setEnabled(true);
+		cmbDevTye.setEnabled(true);
+		
+		cmbParity.setEnabled(true);
+		cmbDB.setEnabled(true);
+		cmbSB.setEnabled(true);
+	}
+	
+	private void tcpip() {
+		ipRadio.setSelected(true);
+		if(rtuRadio.isSelected()) 
+		{
+			rtuRadio.setSelected(false);
+			
+		}
+		txtIPAdd.setEnabled(true);		
+		txtIPPort.setEnabled(true);
+		
+		cmbPort.setEnabled(false);
+		cmbBaud.setEnabled(false);
+		cmbDevTye.setEnabled(false);
+		txtIpCmd.setEnabled(false);
+		cmbParity.setEnabled(false);
+		cmbDB.setEnabled(false);
+		cmbSB.setEnabled(false);
+	}
+	
+	private void ipRadio(ActionEvent e) {
+		// TODO add your code here
+		tcpip();
+	}
+
+	private void rtuRadio(ActionEvent e) {
+		// TODO add your code here
+		rtu();
+	}
+
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		pnlHead = new JPanel();
@@ -439,27 +508,33 @@ public class DeviceSettings extends JDialog {
 		panel6 = new JPanel();
 		pnlInUse = new JPanel();
 		chkNotApp = new JCheckBox();
+		chkCommon = new JCheckBox();
+		ipRadio = new JRadioButton();
+		rtuRadio = new JRadioButton();
 		label82 = new JLabel();
 		cmbPort = new JComboBox();
-		chkCommon = new JCheckBox();
+		label10 = new JLabel();
+		txtIPAdd = new JTextField();
+		label11 = new JLabel();
+		txtIPPort = new JTextField();
 		label81 = new JLabel();
 		txtId = new JTextField();
-		label83 = new JLabel();
-		cmbDevTye = new JComboBox<>();
-		label84 = new JLabel();
-		txtIpCmd = new JTextField();
-		label5 = new JLabel();
-		cmbBaud = new JComboBox<>();
-		label6 = new JLabel();
-		cmbDB = new JComboBox<>();
-		label8 = new JLabel();
-		cmbSB = new JComboBox<>();
-		label7 = new JLabel();
-		cmbParity = new JComboBox<>();
 		label9 = new JLabel();
 		cmbWC = new JComboBox<>();
 		label23 = new JLabel();
 		cmbEnd = new JComboBox<>();
+		label5 = new JLabel();
+		cmbBaud = new JComboBox<>();
+		label83 = new JLabel();
+		cmbDevTye = new JComboBox<>();
+		label84 = new JLabel();
+		txtIpCmd = new JTextField();
+		label7 = new JLabel();
+		cmbParity = new JComboBox<>();
+		label6 = new JLabel();
+		cmbDB = new JComboBox<>();
+		label8 = new JLabel();
+		cmbSB = new JComboBox<>();
 		panel7 = new JPanel();
 		scrlDevCfg = new JScrollPane();
 		tblDevCfg = new JTable();
@@ -486,7 +561,7 @@ public class DeviceSettings extends JDialog {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new TableLayout(new double[][] {
 			{5, TableLayout.FILL, 5},
-			{5, TableLayout.PREFERRED, TableLayout.PREFERRED, 5}}));
+			{5, 567, TableLayout.PREFERRED, 5}}));
 		((TableLayout)contentPane.getLayout()).setHGap(5);
 		((TableLayout)contentPane.getLayout()).setVGap(5);
 
@@ -497,7 +572,7 @@ public class DeviceSettings extends JDialog {
 			pnlHead.setFocusable(false);
 			pnlHead.setLayout(new TableLayout(new double[][] {
 				{273, TableLayout.FILL},
-				{490}}));
+				{540}}));
 			((TableLayout)pnlHead.getLayout()).setHGap(5);
 			((TableLayout)pnlHead.getLayout()).setVGap(5);
 
@@ -516,12 +591,7 @@ public class DeviceSettings extends JDialog {
 
 					//---- jtrStation ----
 					jtrStation.setFont(new Font("Arial", Font.PLAIN, 14));
-					jtrStation.addTreeSelectionListener(new TreeSelectionListener() {
-						@Override
-						public void valueChanged(TreeSelectionEvent e) {
-							jtrStationValueChanged();
-						}
-					});
+					jtrStation.addTreeSelectionListener(e -> jtrStationValueChanged());
 					scrlTree.setViewportView(jtrStation);
 				}
 				panel4.add(scrlTree, new TableLayoutConstraints(0, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -531,12 +601,7 @@ public class DeviceSettings extends JDialog {
 				cmdAddStation.setFont(new Font("Arial", Font.PLAIN, 14));
 				cmdAddStation.setToolTipText("Click this to add new station along with devices");
 				cmdAddStation.setMnemonic('A');
-				cmdAddStation.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cmdAddStationActionPerformed();
-					}
-				});
+				cmdAddStation.addActionListener(e -> cmdAddStationActionPerformed());
 				panel4.add(cmdAddStation, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- cmdDelStation ----
@@ -544,12 +609,7 @@ public class DeviceSettings extends JDialog {
 				cmdDelStation.setFont(new Font("Arial", Font.PLAIN, 14));
 				cmdDelStation.setToolTipText("Click this to delete currently selected station");
 				cmdDelStation.setMnemonic('D');
-				cmdDelStation.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cmdDelStationActionPerformed();
-					}
-				});
+				cmdDelStation.addActionListener(e -> cmdDelStationActionPerformed());
 				panel4.add(cmdDelStation, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 			}
 			pnlHead.add(panel4, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -568,7 +628,7 @@ public class DeviceSettings extends JDialog {
 				{
 					panel6.setLayout(new TableLayout(new double[][] {
 						{TableLayout.FILL, TableLayout.FILL, TableLayout.FILL, TableLayout.FILL, TableLayout.FILL, TableLayout.FILL},
-						{TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+						{TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
 					((TableLayout)panel6.getLayout()).setHGap(5);
 					((TableLayout)panel6.getLayout()).setVGap(5);
 
@@ -585,86 +645,108 @@ public class DeviceSettings extends JDialog {
 						chkNotApp.setText("Device Is Not Used");
 						chkNotApp.setFont(new Font("Arial", Font.PLAIN, 12));
 						chkNotApp.setOpaque(false);
-						chkNotApp.addActionListener(new ActionListener() {
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								chkNotAppActionPerformed();
-							}
-						});
-						pnlInUse.add(chkNotApp, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+						chkNotApp.addActionListener(e -> chkNotAppActionPerformed());
+						pnlInUse.add(chkNotApp, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
 					}
 					panel6.add(pnlInUse, new TableLayoutConstraints(0, 0, 5, 0, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
-
-					//---- label82 ----
-					label82.setText("Port");
-					label82.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label82, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
-
-					//---- cmbPort ----
-					cmbPort.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbPort.setToolTipText("Port name where this instrument is connected.");
-					panel6.add(cmbPort, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- chkCommon ----
 					chkCommon.setText("Port of this device is common for all stations");
 					chkCommon.setFont(new Font("Arial", Font.PLAIN, 12));
-					chkCommon.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							chkNotAppActionPerformed();
-						}
-					});
-					panel6.add(chkCommon, new TableLayoutConstraints(2, 1, 5, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					chkCommon.addActionListener(e -> chkNotAppActionPerformed());
+					panel6.add(chkCommon, new TableLayoutConstraints(1, 1, 4, 1, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
+
+					//---- ipRadio ----
+					ipRadio.setText("IP Communication");
+					ipRadio.setFont(new Font("Arial", Font.PLAIN, 12));
+					ipRadio.addActionListener(e -> ipRadio(e));
+					panel6.add(ipRadio, new TableLayoutConstraints(1, 2, 2, 2, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
+
+					//---- rtuRadio ----
+					rtuRadio.setText("RTU Communication");
+					rtuRadio.setFont(new Font("Arial", Font.PLAIN, 12));
+					rtuRadio.addActionListener(e -> rtuRadio(e));
+					panel6.add(rtuRadio, new TableLayoutConstraints(3, 2, 4, 2, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
+
+					//---- label82 ----
+					label82.setText("Port");
+					label82.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label82, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+					//---- cmbPort ----
+					cmbPort.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbPort.setToolTipText("Port name where this instrument is connected.");
+					panel6.add(cmbPort, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- label10 ----
+					label10.setText("IP Address");
+					label10.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label10, new TableLayoutConstraints(2, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- txtIPAdd ----
+					txtIPAdd.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					txtIPAdd.setToolTipText("Instrument identification/address");
+					panel6.add(txtIPAdd, new TableLayoutConstraints(3, 3, 3, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- label11 ----
+					label11.setText("IP Port");
+					label11.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label11, new TableLayoutConstraints(4, 3, 4, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- txtIPPort ----
+					txtIPPort.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					txtIPPort.setToolTipText("Instrument identification/address");
+					txtIPPort.setText("2200");
+					panel6.add(txtIPPort, new TableLayoutConstraints(5, 3, 5, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label81 ----
 					label81.setText("Device Address");
 					label81.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label81, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+					panel6.add(label81, new TableLayoutConstraints(0, 4, 0, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
 					//---- txtId ----
-					txtId.setFont(new Font("SansSerif", Font.PLAIN, 12));
+					txtId.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 					txtId.setToolTipText("Instrument identification/address");
-					panel6.add(txtId, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(txtId, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label83 ----
-					label83.setText("Deivce Type");
-					label83.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label83, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+					//---- label9 ----
+					label9.setText("Word Count");
+					label9.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label9, new TableLayoutConstraints(2, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- cmbDevTye ----
-					cmbDevTye.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbDevTye.setToolTipText("Port name where this instrument is connected. This is common for all outputs of this device.");
-					cmbDevTye.setModel(new DefaultComboBoxModel<>(new String[] {
-						"Serial",
-						"Modbus",
-						"HID"
+					//---- cmbWC ----
+					cmbWC.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbWC.setModel(new DefaultComboBoxModel<>(new String[] {
+						"NA",
+						"1",
+						"2"
 					}));
-					cmbDevTye.setSelectedIndex(1);
-					cmbDevTye.addItemListener(new ItemListener() {
-						@Override
-						public void itemStateChanged(ItemEvent e) {
-							cmbDevTyeItemStateChanged();
-						}
-					});
-					panel6.add(cmbDevTye, new TableLayoutConstraints(3, 2, 3, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					cmbWC.setSelectedIndex(2);
+					cmbWC.addActionListener(e -> cmbWCActionPerformed());
+					panel6.add(cmbWC, new TableLayoutConstraints(3, 4, 3, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label84 ----
-					label84.setText("Input Command");
-					label84.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label84, new TableLayoutConstraints(4, 2, 4, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+					//---- label23 ----
+					label23.setText("Endianness");
+					label23.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label23, new TableLayoutConstraints(4, 4, 4, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- txtIpCmd ----
-					txtIpCmd.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					txtIpCmd.setToolTipText("Input command for serial device");
-					panel6.add(txtIpCmd, new TableLayoutConstraints(5, 2, 5, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- cmbEnd ----
+					cmbEnd.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbEnd.setModel(new DefaultComboBoxModel<>(new String[] {
+						"NA",
+						"MSB First",
+						"LSB First"
+					}));
+					cmbEnd.setSelectedIndex(1);
+					panel6.add(cmbEnd, new TableLayoutConstraints(5, 4, 5, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label5 ----
 					label5.setText("Baud Rate");
 					label5.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label5, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(label5, new TableLayoutConstraints(0, 5, 0, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- cmbBaud ----
-					cmbBaud.setFont(new Font("SansSerif", Font.PLAIN, 12));
+					cmbBaud.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 					cmbBaud.setModel(new DefaultComboBoxModel<>(new String[] {
 						"110",
 						"300",
@@ -681,44 +763,42 @@ public class DeviceSettings extends JDialog {
 						"921600"
 					}));
 					cmbBaud.setSelectedIndex(5);
-					panel6.add(cmbBaud, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(cmbBaud, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label6 ----
-					label6.setText("Data Bits");
-					label6.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label6, new TableLayoutConstraints(2, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- label83 ----
+					label83.setText("Deivce Type");
+					label83.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label83, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
-					//---- cmbDB ----
-					cmbDB.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbDB.setModel(new DefaultComboBoxModel<>(new String[] {
-						"5",
-						"6",
-						"7",
-						"8"
+					//---- cmbDevTye ----
+					cmbDevTye.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbDevTye.setToolTipText("Port name where this instrument is connected. This is common for all outputs of this device.");
+					cmbDevTye.setModel(new DefaultComboBoxModel<>(new String[] {
+						"Serial",
+						"Modbus",
+						"HID"
 					}));
-					cmbDB.setSelectedIndex(3);
-					panel6.add(cmbDB, new TableLayoutConstraints(3, 3, 3, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					cmbDevTye.setSelectedIndex(1);
+					cmbDevTye.addItemListener(e -> cmbDevTyeItemStateChanged());
+					panel6.add(cmbDevTye, new TableLayoutConstraints(3, 5, 3, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label8 ----
-					label8.setText("Stop Bits");
-					label8.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label8, new TableLayoutConstraints(4, 3, 4, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- label84 ----
+					label84.setText("Input Command");
+					label84.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label84, new TableLayoutConstraints(4, 5, 4, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
 
-					//---- cmbSB ----
-					cmbSB.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbSB.setModel(new DefaultComboBoxModel<>(new String[] {
-						"1",
-						"2"
-					}));
-					panel6.add(cmbSB, new TableLayoutConstraints(5, 3, 5, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- txtIpCmd ----
+					txtIpCmd.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					txtIpCmd.setToolTipText("Input command for serial device");
+					panel6.add(txtIpCmd, new TableLayoutConstraints(5, 5, 5, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label7 ----
 					label7.setText("Parity");
 					label7.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label7, new TableLayoutConstraints(0, 4, 0, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(label7, new TableLayoutConstraints(0, 6, 0, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- cmbParity ----
-					cmbParity.setFont(new Font("SansSerif", Font.PLAIN, 12));
+					cmbParity.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 					cmbParity.setModel(new DefaultComboBoxModel<>(new String[] {
 						"None",
 						"Odd",
@@ -726,43 +806,36 @@ public class DeviceSettings extends JDialog {
 						"Mark",
 						"Space"
 					}));
-					panel6.add(cmbParity, new TableLayoutConstraints(1, 4, 1, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(cmbParity, new TableLayoutConstraints(1, 6, 1, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- label9 ----
-					label9.setText("Word Count");
-					label9.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label9, new TableLayoutConstraints(2, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- label6 ----
+					label6.setText("Data Bits");
+					label6.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label6, new TableLayoutConstraints(2, 6, 2, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-					//---- cmbWC ----
-					cmbWC.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbWC.setModel(new DefaultComboBoxModel<>(new String[] {
-						"NA",
+					//---- cmbDB ----
+					cmbDB.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbDB.setModel(new DefaultComboBoxModel<>(new String[] {
+						"5",
+						"6",
+						"7",
+						"8"
+					}));
+					cmbDB.setSelectedIndex(3);
+					panel6.add(cmbDB, new TableLayoutConstraints(3, 6, 3, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- label8 ----
+					label8.setText("Stop Bits");
+					label8.setFont(new Font("Arial", Font.PLAIN, 12));
+					panel6.add(label8, new TableLayoutConstraints(4, 6, 4, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- cmbSB ----
+					cmbSB.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					cmbSB.setModel(new DefaultComboBoxModel<>(new String[] {
 						"1",
 						"2"
 					}));
-					cmbWC.setSelectedIndex(2);
-					cmbWC.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							cmbWCActionPerformed();
-						}
-					});
-					panel6.add(cmbWC, new TableLayoutConstraints(3, 4, 3, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-					//---- label23 ----
-					label23.setText("Endianness");
-					label23.setFont(new Font("Arial", Font.PLAIN, 12));
-					panel6.add(label23, new TableLayoutConstraints(4, 4, 4, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-					//---- cmbEnd ----
-					cmbEnd.setFont(new Font("SansSerif", Font.PLAIN, 12));
-					cmbEnd.setModel(new DefaultComboBoxModel<>(new String[] {
-						"NA",
-						"MSB First",
-						"LSB First"
-					}));
-					cmbEnd.setSelectedIndex(1);
-					panel6.add(cmbEnd, new TableLayoutConstraints(5, 4, 5, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					panel6.add(cmbSB, new TableLayoutConstraints(5, 6, 5, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				}
 				pnlDev.add(panel6, new TableLayoutConstraints(0, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
@@ -809,7 +882,7 @@ public class DeviceSettings extends JDialog {
 							cm.getColumn(4).setMaxWidth(80);
 							cm.getColumn(4).setPreferredWidth(80);
 						}
-						tblDevCfg.setFont(new Font("SansSerif", Font.PLAIN, 12));
+						tblDevCfg.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 						tblDevCfg.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 						tblDevCfg.setBorder(null);
 						tblDevCfg.setToolTipText("List of reading parameters and corresponding registers");
@@ -822,12 +895,7 @@ public class DeviceSettings extends JDialog {
 					cmdAdd.setFont(new Font("Arial", Font.PLAIN, 12));
 					cmdAdd.setMnemonic('P');
 					cmdAdd.setToolTipText("Click to add new parameter to this device");
-					cmdAdd.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							cmdAddActionPerformed();
-						}
-					});
+					cmdAdd.addActionListener(e -> cmdAddActionPerformed());
 					panel7.add(cmdAdd, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- cmdDel ----
@@ -835,12 +903,7 @@ public class DeviceSettings extends JDialog {
 					cmdDel.setFont(new Font("Arial", Font.PLAIN, 12));
 					cmdDel.setMnemonic('R');
 					cmdDel.setToolTipText("Click to delete selected parameter");
-					cmdDel.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							cmdDelActionPerformed();
-						}
-					});
+					cmdDel.addActionListener(e -> cmdDelActionPerformed());
 					panel7.add(cmdDel, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 				}
 				pnlDev.add(panel7, new TableLayoutConstraints(0, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -852,24 +915,14 @@ public class DeviceSettings extends JDialog {
 				cmdSaveDev.setToolTipText("Click this to save changes made for above device");
 				cmdSaveDev.setMargin(new Insets(2, 5, 2, 5));
 				cmdSaveDev.setIcon(new ImageIcon(getClass().getResource("/img/save.PNG")));
-				cmdSaveDev.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cmdSaveDevActionPerformed();
-					}
-				});
+				cmdSaveDev.addActionListener(e -> cmdSaveDevActionPerformed());
 				pnlDev.add(cmdSaveDev, new TableLayoutConstraints(0, 2, 0, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- cmdReset ----
 				cmdReset.setText("Reset to original settings");
 				cmdReset.setFont(new Font("Arial", Font.PLAIN, 14));
 				cmdReset.setToolTipText("Click to reset the device to its original settings");
-				cmdReset.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cmdResetActionPerformed();
-					}
-				});
+				cmdReset.addActionListener(e -> cmdResetActionPerformed());
 				pnlDev.add(cmdReset, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 			}
 			pnlHead.add(pnlDev, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -934,7 +987,7 @@ public class DeviceSettings extends JDialog {
 					cm.getColumn(8).setResizable(false);
 					cm.getColumn(8).setPreferredWidth(60);
 				}
-				tblCal.setFont(new Font("SansSerif", Font.PLAIN, 12));
+				tblCal.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 				tblCal.setToolTipText("Calibration record of all instruments of this panel");
 				scrollPane1.setViewportView(tblCal);
 			}
@@ -946,12 +999,7 @@ public class DeviceSettings extends JDialog {
 			cmdSave.setIcon(new ImageIcon(getClass().getResource("/img/save.PNG")));
 			cmdSave.setToolTipText("Click this to save changes made above for calibration record");
 			cmdSave.setMnemonic('C');
-			cmdSave.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					cmdSaveActionPerformed();
-				}
-			});
+			cmdSave.addActionListener(e -> cmdSaveActionPerformed());
 			panel1.add(cmdSave, new TableLayoutConstraints(0, 1, 9, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 		}
 		contentPane.add(panel1, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -971,27 +1019,33 @@ public class DeviceSettings extends JDialog {
 	private JPanel panel6;
 	private JPanel pnlInUse;
 	private JCheckBox chkNotApp;
+	private JCheckBox chkCommon;
+	private JRadioButton ipRadio;
+	private JRadioButton rtuRadio;
 	private JLabel label82;
 	private JComboBox cmbPort;
-	private JCheckBox chkCommon;
+	private JLabel label10;
+	private JTextField txtIPAdd;
+	private JLabel label11;
+	private JTextField txtIPPort;
 	private JLabel label81;
 	private JTextField txtId;
-	private JLabel label83;
-	private JComboBox<String> cmbDevTye;
-	private JLabel label84;
-	private JTextField txtIpCmd;
-	private JLabel label5;
-	private JComboBox<String> cmbBaud;
-	private JLabel label6;
-	private JComboBox<String> cmbDB;
-	private JLabel label8;
-	private JComboBox<String> cmbSB;
-	private JLabel label7;
-	private JComboBox<String> cmbParity;
 	private JLabel label9;
 	private JComboBox<String> cmbWC;
 	private JLabel label23;
 	private JComboBox<String> cmbEnd;
+	private JLabel label5;
+	private JComboBox<String> cmbBaud;
+	private JLabel label83;
+	private JComboBox<String> cmbDevTye;
+	private JLabel label84;
+	private JTextField txtIpCmd;
+	private JLabel label7;
+	private JComboBox<String> cmbParity;
+	private JLabel label6;
+	private JComboBox<String> cmbDB;
+	private JLabel label8;
+	private JComboBox<String> cmbSB;
 	private JPanel panel7;
 	private JScrollPane scrlDevCfg;
 	private JTable tblDevCfg;

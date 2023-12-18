@@ -21,6 +21,37 @@ public class Device {
 	private Boolean isCommonPort = true;
 	private Boolean initError = false;
 	
+	//TCP_IP Parameters
+	private String ipAddress = null;
+	private Integer ipPort = 2200;
+	private String protocol = "RTU";
+	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public Integer getIpPort() {
+		return ipPort;
+	}
+
+	public void setIpPort(Integer ipPort) {
+		this.ipPort = ipPort;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	
+	
 	// device handlers
 	private DeviceSerialReader devSerRdr = null;
 	private DeviceModbusReader devModRdr = null;
@@ -37,7 +68,7 @@ public class Device {
 	HashMap<String, HashMap<String, Integer>> controlList = null;
 	
 	// constructor (note: ipCmd is required only for serial device)
-	public Device(String devName, Integer devAdr, String devType, Integer wc, String endianness, SerialParameters serParams, String ipCmd, Boolean isInUse, Boolean isCommonPort) {
+	public Device(String devName, Integer devAdr, String devType, Integer wc, String endianness, SerialParameters serParams, String ipCmd, Boolean isInUse, Boolean isCommonPort, String Protocol, String ipAddress, Integer ipPort) {
 		this.setDevName(devName);
 		this.setDevAdr(devAdr);
 		this.setDevType(devType);
@@ -47,6 +78,9 @@ public class Device {
 		this.setIpCmd(ipCmd);
 		this.setIsInUse(isInUse);
 		this.setIsCommonPort(isCommonPort);
+		this.setProtocol(Protocol);
+		this.setIpAddress(ipAddress);
+		this.setIpPort(ipPort);
 		this.initError = false;
 		controlList = new HashMap<String, HashMap<String, Integer>>();
 	}
@@ -121,7 +155,7 @@ public class Device {
 		if (devType.equals("S")) { // 1. serial device
 			devSerRdr = DeviceSerialReader.getInstance(params, isCommonPort);
 		} else if (devType.equals("M")) { // 2. modbus device
-			devModRdr = DeviceModbusReader.getInstance(devAdr, wc, endianness.equals("LSB First"), params, isCommonPort);
+			devModRdr = DeviceModbusReader.getInstance(devAdr, wc, endianness.equals("LSB First"), params, isCommonPort, protocol, ipAddress, ipPort);
 		} else {
 			throw new Exception("Invalid device type '" + devType + "' for device:" + devName);
 		}
@@ -157,18 +191,18 @@ public class Device {
 	// function to read value for a register
 	public synchronized Boolean readCoil(Integer adr) throws Exception {
 		// System.out.println("getting coil " + adr + " with " + devModRdr.readCoil(devAdr, adr));
-		return devModRdr.readCoil(devAdr, adr);
+		return devModRdr.readCoil(devAdr, adr, protocol);
 	}
 	
 	/* function to write output coil */
 	public synchronized void writeCoil(Integer adr, Boolean val) throws Exception {
 		//System.out.println("writing coil " + adr + " to " + val);
-		devModRdr.writeCoil(devAdr, adr, val);
+		devModRdr.writeCoil(devAdr, adr, val, protocol);
 	}
 	
 	/* function to write into a holding register */
 	public synchronized void writeHoldingReg(Integer adr, Integer val) throws Exception {
-		devModRdr.writeHoldingReg(devAdr, adr, val);
+		devModRdr.writeHoldingReg(devAdr, adr, val, protocol);
 	}
 	
 	// function to read value for a register
@@ -177,15 +211,15 @@ public class Device {
 		if (devType.equals("M")) { // modbus device
 			// System.out.println("reading from " + devModRdr + ",dev id:" + devAdr + " " + param.getParamRegType() + " adr:" + param.getParamAdr());
 			if (param.getParamRegType().equals("Coil")) {
-				return devModRdr == null ? "false" : devModRdr.readCoil(devAdr, param.getParamAdr()) ? "true" : "false";
+				return devModRdr == null ? "false" : devModRdr.readCoil(devAdr, param.getParamAdr(),protocol) ? "true" : "false";
 			} else if (param.getParamRegType().equals("Input")) {
-					floatReading = (devModRdr.readInputReg(devAdr, Integer.valueOf(param.getParamAdr())))/1.0F;
+					floatReading = (devModRdr.readInputReg(devAdr, Integer.valueOf(param.getParamAdr()),protocol))/1.0F;
 			} else if (param.getParamRegType().equals("Holding")) {
-				floatReading = (devModRdr.readHoldingReg(devAdr, Integer.valueOf(param.getParamAdr())))/1.0F;
+				floatReading = (devModRdr.readHoldingReg(devAdr, Integer.valueOf(param.getParamAdr()),protocol))/1.0F;
 			} else if (param.getParamRegType().equals("Input Float")) {
-				floatReading = devModRdr.readInputRegFloat(devAdr, Integer.valueOf(param.getParamAdr()));
+				floatReading = devModRdr.readInputRegFloat(devAdr, Integer.valueOf(param.getParamAdr()),protocol);
 			} else if (param.getParamRegType().equals("Holding Float")){
-				floatReading = devModRdr.readHoldingRegFloat(devAdr, Integer.valueOf(param.getParamAdr()));
+				floatReading = devModRdr.readHoldingRegFloat(devAdr, Integer.valueOf(param.getParamAdr()),protocol);
 			} else {
 				throw new Exception("Invalid register type:" + param.getParamRegType());	
 			}

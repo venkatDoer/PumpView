@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="1.8.0_311" class="java.beans.XMLDecoder">
+<java version="17.0.8.1" class="java.beans.XMLDecoder">
  <object class="com.jformdesigner.model.FormModel">
   <void property="contentType">
    <string>form/swing</string>
@@ -17,7 +17,7 @@
        </void>
        <void method="setProperty">
         <string>$rowSpecs</string>
-        <string>5.0, pref, pref, 5.0</string>
+        <string>5.0, 567.0, pref, 5.0</string>
        </void>
        <void method="setProperty">
         <string>hGap</string>
@@ -67,7 +67,7 @@
          </void>
          <void method="setProperty">
           <string>$rowSpecs</string>
-          <string>490.0</string>
+          <string>540.0</string>
          </void>
          <void method="setProperty">
           <string>hGap</string>
@@ -324,7 +324,7 @@
              </void>
              <void method="setProperty">
               <string>$rowSpecs</string>
-              <string>pref, pref, pref, pref, pref, pref</string>
+              <string>pref, pref, pref, pref, pref, pref, pref, pref</string>
              </void>
              <void method="setProperty">
               <string>hGap</string>
@@ -404,6 +404,10 @@
                </object>
                <object class="com.jformdesigner.model.FormLayoutConstraints">
                 <class>com.jformdesigner.runtime.TableConstraints</class>
+                <void method="setProperty">
+                 <string>hAlign</string>
+                 <int>1</int>
+                </void>
                </object>
               </void>
              </object>
@@ -415,68 +419,6 @@
               </void>
               <void method="setProperty">
                <string>hAlign</string>
-               <int>1</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JLabel</string>
-              <void method="setProperty">
-               <string>text</string>
-               <string>Port</string>
-              </void>
-              <void method="setProperty">
-               <string>font</string>
-               <object class="java.awt.Font" id="Font2">
-                <string>Arial</string>
-                <int>0</int>
-                <int>12</int>
-               </object>
-              </void>
-              <void property="name">
-               <string>label82</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>vAlign</string>
-               <int>1</int>
-              </void>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>1</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JComboBox</string>
-              <void method="setProperty">
-               <string>font</string>
-               <object class="java.awt.Font" id="Font3">
-                <string>SansSerif</string>
-                <int>0</int>
-                <int>12</int>
-               </object>
-              </void>
-              <void method="setProperty">
-               <string>toolTipText</string>
-               <string>Port name where this instrument is connected.</string>
-              </void>
-              <void property="name">
-               <string>cmbPort</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>1</int>
-              </void>
-              <void method="setProperty">
-               <string>gridY</string>
                <int>1</int>
               </void>
              </object>
@@ -512,11 +454,291 @@
               </void>
               <void method="setProperty">
                <string>gridX</string>
-               <int>2</int>
+               <int>1</int>
               </void>
               <void method="setProperty">
                <string>gridWidth</string>
                <int>4</int>
+              </void>
+              <void method="setProperty">
+               <string>hAlign</string>
+               <int>1</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JRadioButton</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>IP Communication</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font">
+                <string>Arial</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void property="name">
+               <string>ipRadio</string>
+              </void>
+              <void method="addEvent">
+               <object class="com.jformdesigner.model.FormEvent">
+                <string>java.awt.event.ActionListener</string>
+                <string>actionPerformed</string>
+                <string>ipRadio</string>
+                <boolean>true</boolean>
+               </object>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>gridWidth</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>hAlign</string>
+               <int>1</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JRadioButton</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>RTU Communication</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font">
+                <string>Arial</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void property="name">
+               <string>rtuRadio</string>
+              </void>
+              <void method="addEvent">
+               <object class="com.jformdesigner.model.FormEvent">
+                <string>java.awt.event.ActionListener</string>
+                <string>actionPerformed</string>
+                <string>rtuRadio</string>
+                <boolean>true</boolean>
+               </object>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>gridWidth</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>hAlign</string>
+               <int>1</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>Port</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font" id="Font2">
+                <string>Arial</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void property="name">
+               <string>label82</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>vAlign</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JComboBox</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font" id="Font3">
+                <string>SansSerif</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void method="setProperty">
+               <string>toolTipText</string>
+               <string>Port name where this instrument is connected.</string>
+              </void>
+              <void property="name">
+               <string>cmbPort</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>IP Address</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font" id="Font4">
+                <string>Arial</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void property="name">
+               <string>label10</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>2</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JTextField</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object class="java.awt.Font" id="Font5">
+                <string>SansSerif</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
+              </void>
+              <void method="setProperty">
+               <string>toolTipText</string>
+               <string>Instrument identification/address</string>
+              </void>
+              <void property="name">
+               <string>txtIPAdd</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>3</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>IP Port</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font4"/>
+              </void>
+              <void property="name">
+               <string>label11</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>4</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JTextField</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font5"/>
+              </void>
+              <void method="setProperty">
+               <string>toolTipText</string>
+               <string>Instrument identification/address</string>
+              </void>
+              <void method="setProperty">
+               <string>text</string>
+               <string>2200</string>
+              </void>
+              <void property="name">
+               <string>txtIPPort</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>5</int>
               </void>
              </object>
             </void>
@@ -543,7 +765,7 @@
               </void>
               <void method="setProperty">
                <string>gridY</string>
-               <int>2</int>
+               <int>4</int>
               </void>
              </object>
             </void>
@@ -552,11 +774,7 @@
               <string>javax.swing.JTextField</string>
               <void method="setProperty">
                <string>font</string>
-               <object class="java.awt.Font" id="Font4">
-                <string>SansSerif</string>
-                <int>0</int>
-                <int>12</int>
-               </object>
+               <object idref="Font5"/>
               </void>
               <void method="setProperty">
                <string>toolTipText</string>
@@ -574,7 +792,7 @@
               </void>
               <void method="setProperty">
                <string>gridY</string>
-               <int>2</int>
+               <int>4</int>
               </void>
              </object>
             </void>
@@ -583,28 +801,24 @@
               <string>javax.swing.JLabel</string>
               <void method="setProperty">
                <string>text</string>
-               <string>Deivce Type</string>
+               <string>Word Count</string>
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font2"/>
+               <object idref="Font4"/>
               </void>
               <void property="name">
-               <string>label83</string>
+               <string>label9</string>
               </void>
              </object>
              <object class="com.jformdesigner.model.FormLayoutConstraints">
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
-               <string>vAlign</string>
-               <int>1</int>
+               <string>gridY</string>
+               <int>4</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
-               <int>2</int>
-              </void>
-              <void method="setProperty">
-               <string>gridY</string>
                <int>2</int>
               </void>
              </object>
@@ -614,41 +828,41 @@
               <string>javax.swing.JComboBox</string>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font3"/>
-              </void>
-              <void method="setProperty">
-               <string>toolTipText</string>
-               <string>Port name where this instrument is connected. This is common for all outputs of this device.</string>
+               <object class="java.awt.Font" id="Font6">
+                <string>SansSerif</string>
+                <int>0</int>
+                <int>12</int>
+               </object>
               </void>
               <void method="setProperty">
                <string>model</string>
                <object class="javax.swing.DefaultComboBoxModel">
                 <void property="selectedItem">
-                 <string>Serial</string>
+                 <string>NA</string>
                 </void>
                 <void method="addElement">
-                 <string>Serial</string>
+                 <string>NA</string>
                 </void>
                 <void method="addElement">
-                 <string>Modbus</string>
+                 <string>1</string>
                 </void>
                 <void method="addElement">
-                 <string>HID</string>
+                 <string>2</string>
                 </void>
                </object>
               </void>
               <void method="setProperty">
                <string>selectedIndex</string>
-               <int>1</int>
+               <int>2</int>
               </void>
               <void property="name">
-               <string>cmbDevTye</string>
+               <string>cmbWC</string>
               </void>
               <void method="addEvent">
                <object class="com.jformdesigner.model.FormEvent">
-                <string>java.awt.event.ItemListener</string>
-                <string>itemStateChanged</string>
-                <string>cmbDevTyeItemStateChanged</string>
+                <string>java.awt.event.ActionListener</string>
+                <string>actionPerformed</string>
+                <string>cmbWCActionPerformed</string>
                 <boolean>false</boolean>
                </object>
               </void>
@@ -656,12 +870,12 @@
              <object class="com.jformdesigner.model.FormLayoutConstraints">
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
-               <string>gridX</string>
-               <int>3</int>
+               <string>gridY</string>
+               <int>4</int>
               </void>
               <void method="setProperty">
-               <string>gridY</string>
-               <int>2</int>
+               <string>gridX</string>
+               <int>3</int>
               </void>
              </object>
             </void>
@@ -670,25 +884,21 @@
               <string>javax.swing.JLabel</string>
               <void method="setProperty">
                <string>text</string>
-               <string>Input Command</string>
+               <string>Endianness</string>
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font2"/>
+               <object idref="Font4"/>
               </void>
               <void property="name">
-               <string>label84</string>
+               <string>label23</string>
               </void>
              </object>
              <object class="com.jformdesigner.model.FormLayoutConstraints">
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
-               <string>vAlign</string>
-               <int>1</int>
-              </void>
-              <void method="setProperty">
                <string>gridY</string>
-               <int>2</int>
+               <int>4</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -698,24 +908,41 @@
             </void>
             <void method="add">
              <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JTextField</string>
+              <string>javax.swing.JComboBox</string>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font4"/>
+               <object idref="Font6"/>
               </void>
               <void method="setProperty">
-               <string>toolTipText</string>
-               <string>Input command for serial device</string>
+               <string>model</string>
+               <object class="javax.swing.DefaultComboBoxModel">
+                <void property="selectedItem">
+                 <string>NA</string>
+                </void>
+                <void method="addElement">
+                 <string>NA</string>
+                </void>
+                <void method="addElement">
+                 <string>MSB First</string>
+                </void>
+                <void method="addElement">
+                 <string>LSB First</string>
+                </void>
+               </object>
+              </void>
+              <void method="setProperty">
+               <string>selectedIndex</string>
+               <int>1</int>
               </void>
               <void property="name">
-               <string>txtIpCmd</string>
+               <string>cmbEnd</string>
               </void>
              </object>
              <object class="com.jformdesigner.model.FormLayoutConstraints">
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>2</int>
+               <int>4</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -732,11 +959,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object class="java.awt.Font" id="Font5">
-                <string>Arial</string>
-                <int>0</int>
-                <int>12</int>
-               </object>
+               <object idref="Font4"/>
               </void>
               <void property="name">
                <string>label5</string>
@@ -746,7 +969,7 @@
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>3</int>
+               <int>5</int>
               </void>
              </object>
             </void>
@@ -755,11 +978,7 @@
               <string>javax.swing.JComboBox</string>
               <void method="setProperty">
                <string>font</string>
-               <object class="java.awt.Font" id="Font6">
-                <string>SansSerif</string>
-                <int>0</int>
-                <int>12</int>
-               </object>
+               <object idref="Font6"/>
               </void>
               <void method="setProperty">
                <string>model</string>
@@ -824,7 +1043,221 @@
               </void>
               <void method="setProperty">
                <string>gridY</string>
+               <int>5</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>Deivce Type</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font2"/>
+              </void>
+              <void property="name">
+               <string>label83</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>vAlign</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>2</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>5</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JComboBox</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font3"/>
+              </void>
+              <void method="setProperty">
+               <string>toolTipText</string>
+               <string>Port name where this instrument is connected. This is common for all outputs of this device.</string>
+              </void>
+              <void method="setProperty">
+               <string>model</string>
+               <object class="javax.swing.DefaultComboBoxModel">
+                <void property="selectedItem">
+                 <string>Serial</string>
+                </void>
+                <void method="addElement">
+                 <string>Serial</string>
+                </void>
+                <void method="addElement">
+                 <string>Modbus</string>
+                </void>
+                <void method="addElement">
+                 <string>HID</string>
+                </void>
+               </object>
+              </void>
+              <void method="setProperty">
+               <string>selectedIndex</string>
+               <int>1</int>
+              </void>
+              <void property="name">
+               <string>cmbDevTye</string>
+              </void>
+              <void method="addEvent">
+               <object class="com.jformdesigner.model.FormEvent">
+                <string>java.awt.event.ItemListener</string>
+                <string>itemStateChanged</string>
+                <string>cmbDevTyeItemStateChanged</string>
+                <boolean>false</boolean>
+               </object>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridX</string>
                <int>3</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>5</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>Input Command</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font2"/>
+              </void>
+              <void property="name">
+               <string>label84</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>vAlign</string>
+               <int>1</int>
+              </void>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>5</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>4</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JTextField</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font5"/>
+              </void>
+              <void method="setProperty">
+               <string>toolTipText</string>
+               <string>Input command for serial device</string>
+              </void>
+              <void property="name">
+               <string>txtIpCmd</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>5</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>5</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JLabel</string>
+              <void method="setProperty">
+               <string>text</string>
+               <string>Parity</string>
+              </void>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font4"/>
+              </void>
+              <void property="name">
+               <string>label7</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>6</int>
+              </void>
+             </object>
+            </void>
+            <void method="add">
+             <object class="com.jformdesigner.model.FormComponent">
+              <string>javax.swing.JComboBox</string>
+              <void method="setProperty">
+               <string>font</string>
+               <object idref="Font6"/>
+              </void>
+              <void method="setProperty">
+               <string>model</string>
+               <object class="javax.swing.DefaultComboBoxModel">
+                <void property="selectedItem">
+                 <string>None</string>
+                </void>
+                <void method="addElement">
+                 <string>None</string>
+                </void>
+                <void method="addElement">
+                 <string>Odd</string>
+                </void>
+                <void method="addElement">
+                 <string>Even</string>
+                </void>
+                <void method="addElement">
+                 <string>Mark</string>
+                </void>
+                <void method="addElement">
+                 <string>Space</string>
+                </void>
+               </object>
+              </void>
+              <void property="name">
+               <string>cmbParity</string>
+              </void>
+             </object>
+             <object class="com.jformdesigner.model.FormLayoutConstraints">
+              <class>com.jformdesigner.runtime.TableConstraints</class>
+              <void method="setProperty">
+               <string>gridY</string>
+               <int>6</int>
+              </void>
+              <void method="setProperty">
+               <string>gridX</string>
+               <int>1</int>
               </void>
              </object>
             </void>
@@ -837,7 +1270,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font5"/>
+               <object idref="Font4"/>
               </void>
               <void property="name">
                <string>label6</string>
@@ -847,7 +1280,7 @@
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>3</int>
+               <int>6</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -894,7 +1327,7 @@
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>3</int>
+               <int>6</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -911,7 +1344,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font5"/>
+               <object idref="Font4"/>
               </void>
               <void property="name">
                <string>label8</string>
@@ -921,7 +1354,7 @@
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>3</int>
+               <int>6</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -958,226 +1391,7 @@
               <class>com.jformdesigner.runtime.TableConstraints</class>
               <void method="setProperty">
                <string>gridY</string>
-               <int>3</int>
-              </void>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>5</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JLabel</string>
-              <void method="setProperty">
-               <string>text</string>
-               <string>Parity</string>
-              </void>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font5"/>
-              </void>
-              <void property="name">
-               <string>label7</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JComboBox</string>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font6"/>
-              </void>
-              <void method="setProperty">
-               <string>model</string>
-               <object class="javax.swing.DefaultComboBoxModel">
-                <void property="selectedItem">
-                 <string>None</string>
-                </void>
-                <void method="addElement">
-                 <string>None</string>
-                </void>
-                <void method="addElement">
-                 <string>Odd</string>
-                </void>
-                <void method="addElement">
-                 <string>Even</string>
-                </void>
-                <void method="addElement">
-                 <string>Mark</string>
-                </void>
-                <void method="addElement">
-                 <string>Space</string>
-                </void>
-               </object>
-              </void>
-              <void property="name">
-               <string>cmbParity</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
-              </void>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>1</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JLabel</string>
-              <void method="setProperty">
-               <string>text</string>
-               <string>Word Count</string>
-              </void>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font5"/>
-              </void>
-              <void property="name">
-               <string>label9</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
-              </void>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>2</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JComboBox</string>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font6"/>
-              </void>
-              <void method="setProperty">
-               <string>model</string>
-               <object class="javax.swing.DefaultComboBoxModel">
-                <void property="selectedItem">
-                 <string>NA</string>
-                </void>
-                <void method="addElement">
-                 <string>NA</string>
-                </void>
-                <void method="addElement">
-                 <string>1</string>
-                </void>
-                <void method="addElement">
-                 <string>2</string>
-                </void>
-               </object>
-              </void>
-              <void method="setProperty">
-               <string>selectedIndex</string>
-               <int>2</int>
-              </void>
-              <void property="name">
-               <string>cmbWC</string>
-              </void>
-              <void method="addEvent">
-               <object class="com.jformdesigner.model.FormEvent">
-                <string>java.awt.event.ActionListener</string>
-                <string>actionPerformed</string>
-                <string>cmbWCActionPerformed</string>
-                <boolean>false</boolean>
-               </object>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
-              </void>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>3</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JLabel</string>
-              <void method="setProperty">
-               <string>text</string>
-               <string>Endianness</string>
-              </void>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font5"/>
-              </void>
-              <void property="name">
-               <string>label23</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
-              </void>
-              <void method="setProperty">
-               <string>gridX</string>
-               <int>4</int>
-              </void>
-             </object>
-            </void>
-            <void method="add">
-             <object class="com.jformdesigner.model.FormComponent">
-              <string>javax.swing.JComboBox</string>
-              <void method="setProperty">
-               <string>font</string>
-               <object idref="Font6"/>
-              </void>
-              <void method="setProperty">
-               <string>model</string>
-               <object class="javax.swing.DefaultComboBoxModel">
-                <void property="selectedItem">
-                 <string>NA</string>
-                </void>
-                <void method="addElement">
-                 <string>NA</string>
-                </void>
-                <void method="addElement">
-                 <string>MSB First</string>
-                </void>
-                <void method="addElement">
-                 <string>LSB First</string>
-                </void>
-               </object>
-              </void>
-              <void method="setProperty">
-               <string>selectedIndex</string>
-               <int>1</int>
-              </void>
-              <void property="name">
-               <string>cmbEnd</string>
-              </void>
-             </object>
-             <object class="com.jformdesigner.model.FormLayoutConstraints">
-              <class>com.jformdesigner.runtime.TableConstraints</class>
-              <void method="setProperty">
-               <string>gridY</string>
-               <int>4</int>
+               <int>6</int>
               </void>
               <void method="setProperty">
                <string>gridX</string>
@@ -2249,7 +2463,7 @@
        <string>size</string>
        <object class="java.awt.Dimension">
         <int>960</int>
-        <int>720</int>
+        <int>780</int>
        </object>
       </void>
      </object>

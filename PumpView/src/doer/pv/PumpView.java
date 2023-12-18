@@ -3026,9 +3026,9 @@ public class PumpView extends JFrame {
 				continue;
 			}
 			if (i == 0 || i == 3 || i == 6) { // fo, duty point, so test go to routine by default
-				db.executeUpdate("insert into " + Configuration.TESTNAMES_ROUTINE + " values ('1','" + key + "'," + i + ",'','')");
+				db.executeUpdate("insert into " + Configuration.TESTNAMES_ROUTINE + " values ('1','" + key + "'," + i + ",'','','')");
 			}
-			db.executeUpdate("insert into " + Configuration.TESTNAMES_TYPE + " values ('1','" + key + "'," + i + ",'','')");
+			db.executeUpdate("insert into " + Configuration.TESTNAMES_TYPE + " values ('1','" + key + "'," + i + ",'','','')");
 			++i;
 		}
 		
@@ -4030,7 +4030,7 @@ public class PumpView extends JFrame {
 	
 	private void initDevTables() throws Exception {
 		// 1. for device info
-		db.executeUpdate("CREATE TABLE IF NOT EXISTS DEVICE (dev_id integer primary key autoincrement, line text, station_no text, dev_name text, dev_adr text, dev_port text, dev_type text, baud_rt integer, data_bits integer, stop_bits integer, parity integer, wc integer, endianness text, fc integer, ip_cmd text, is_in_use text, is_common_port text, unique (line, station_no, dev_name));");
+		db.executeUpdate("CREATE TABLE IF NOT EXISTS DEVICE (dev_id integer primary key autoincrement, line text, station_no text, dev_name text, dev_adr text, dev_port text, dev_type text, baud_rt integer, data_bits integer, stop_bits integer, parity integer, wc integer, endianness text, fc integer, ip_cmd text, is_in_use text, is_common_port text, comm_protocol text, ip_address text, ip_port text, unique (line, station_no, dev_name));");
 		db.executeUpdate("CREATE TABLE IF NOT EXISTS DEVICE_PARAM (dev_id integer, param_name text, param_adr text, conv_factor text, format_text text, reg_type text, remark text, unique (dev_id, param_name), foreign key(dev_id) references DEVICE(dev_id))");
 	}
 	
@@ -4065,7 +4065,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("Grindex Meter with HMI")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='Grindex Meter with HMI'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Grindex Meter with HMI', '1', '', 'M', 19200, 8, 2, 0, 2, 'MSB First', 0, '', 'true', 'true')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Grindex Meter with HMI', '1', '', 'M', 19200, 8, 2, 0, 2, 'MSB First', 0, '', 'true', 'true', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4088,7 +4088,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("PLC")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='PLC'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'PLC', '1', '', 'M', 19200, 8, 2, 0, 2, 'LSB First', 0, '', 'false', 'true')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'PLC', '1', '', 'M', 19200, 8, 2, 0, 2, 'LSB First', 0, '', 'false', 'true', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4115,7 +4115,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("Power Meter")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='Power Meter'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Power Meter', '" + devAdr + "', '', 'M', 9600, 8, 1, 0, 2, 'MSB First', 0, '', 'true', 'true')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Power Meter', '" + devAdr + "', '', 'M', 9600, 8, 1, 0, 2, 'MSB First', 0, '', 'true', 'true', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4132,7 +4132,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("HIOKI Power Meter")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='HIOKI Power Meter'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'HIOKI Power Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'true')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'HIOKI Power Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'true', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4149,7 +4149,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("Speed Tester")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='Speed Tester'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Speed Tester', 'NA', '', 'S', 2400, 8, 1, 0, 0, '', 0, 'R1', 'true', 'false')"); // magtrol
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'Speed Tester', 'NA', '', 'S', 2400, 8, 1, 0, 0, '', 0, 'R1', 'true', 'false', 'RTU', '', '2200')"); // magtrol
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4159,7 +4159,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("AAROHI Meter")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='AAROHI Meter'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'AAROHI Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'false')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'AAROHI Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'false', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -4180,7 +4180,7 @@ public class PumpView extends JFrame {
 		
 		if (devName.isEmpty() || devName.equals("FREHNIG Flow Meter")) {
 			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='FREHNIG Flow Meter'");
-			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'FREHNIG Flow Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '1', 'false', 'false')");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'FREHNIG Flow Meter', 'NA', '', 'S', 9600, 8, 1, 0, 0, '', 0, '1', 'false', 'false', 'RTU', '', '2200')");
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
@@ -5987,9 +5987,7 @@ public class PumpView extends JFrame {
 	String lastManualTest = "";
 	Boolean reTest = false;
 	
-	DevicePresCont presCtrlr = null;
-	boolean presContInitialized = false;
-	boolean presContPortError = false;
+
 
 	// for live reading (TBD: need to optimize)
 	HashMap<String, String> liveReadData = new HashMap<String, String>();
