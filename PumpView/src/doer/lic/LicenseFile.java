@@ -22,6 +22,8 @@ public class LicenseFile {
 	private String trialInfo = ""; // "YES:days:date" or "NO"
 	private String regCode = "";
 	private String dbName = "";
+	private String isMultiDb = "";
+	private String dbNameList = "";
 	
 	public LicenseFile() {
 		
@@ -52,6 +54,18 @@ public class LicenseFile {
 				// ignore as db name is not created in .lic file by default
 			}
 			
+			try {
+				setIsMultiDb(Encrypt.decrypt(dis.readUTF()));
+			} catch (EOFException e) {
+				// ignore as is multi db is not created in .lic file by default
+			}
+			
+			try {
+				setDbNameList(Encrypt.decrypt(dis.readUTF()));
+			} catch (EOFException e) {
+				// ignore as db name list is not created in .lic file by default
+			}
+			
 			dis.close();
 			licFileIPStream.close();
 		} catch (FileNotFoundException e) {
@@ -76,6 +90,8 @@ public class LicenseFile {
 		objLicOPStream.writeUTF(Encrypt.encrypt(trialInfo));
 		objLicOPStream.writeUTF(regCode); // no need encrypt reg code as it was already MD5 hashed
 		objLicOPStream.writeUTF(Encrypt.encrypt(dbName)); 
+		objLicOPStream.writeUTF(Encrypt.encrypt(isMultiDb)); 
+		objLicOPStream.writeUTF(Encrypt.encrypt(dbNameList)); 
 		
 		objLicOPStream.close();
 		licFileOPStream.close();
@@ -135,6 +151,22 @@ public class LicenseFile {
 
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
+	}
+	
+	public String getIsMultiDb() {
+		return this.isMultiDb;
+	}
+	
+	public void setIsMultiDb(String isMultiDb) {
+		this.isMultiDb = isMultiDb;
+	}
+	
+	public String getDbNameList() {
+		return dbNameList;
+	}
+	
+	public void setDbNameList(String dbNameList) {
+		this.dbNameList = dbNameList;
 	}
 
 	public String getLicISIs() {

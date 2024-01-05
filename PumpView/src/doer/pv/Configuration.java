@@ -48,6 +48,9 @@ public class Configuration {
 	public static String SPEED_TESTER_TYPE = "S";
 	public static Double CUR_PIPE_CONST = 0.0;
 	public static String IS_PERF_BASED_ON_GRAPH_FOR_ROUTINE = "NO";
+	public static String IS_MULTI_DB = "NO";
+	public static String APP_SINGLE_DB_NAME = "";
+	public static String APP_DB_NAME_LIST = "";
 	
 	// DEVICES
 	public static String LAST_USED_STATION = "Station1";
@@ -169,6 +172,7 @@ public class Configuration {
 				if (!dbDir.exists()) {
 					dbDir.mkdir();
 				}
+				APP_SINGLE_DB_NAME = APP_DB_NAME;
 			} else {
 				// check for db file name, if it does not exist alert and use default one
 				File dbFile = new File(APP_DB_NAME);

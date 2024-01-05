@@ -21,6 +21,7 @@ import org.jfree.ui.FilesystemFilter;
 import doer.lic.LicenseFile;
 
 import info.clearthought.layout.*;
+import jxl.read.biff.CompoundFile;
 
 /**
  * @author VENKATESAN SELVARAJ
@@ -108,20 +109,45 @@ public class OtherSettings extends JDialog {
 		
 		//db name
 		String dbMsg = "";
-		if (!Configuration.APP_DB_NAME.equals(txtDB.getText())) {
+		String tmpDbList = "";
+		
+		String tmpIsMultiDB = Configuration.IS_MULTI_DB;
+		Configuration.IS_MULTI_DB = optSingle.isSelected() ? "NO" : "YES";
+		Integer noOfLines = Integer.valueOf(Configuration.NUMBER_OF_LINES);
+		String tmpDBLoc = "";
+		if (noOfLines > 1) {
+			for(int i=0; i<noOfLines; i++) {
+				tmpDBLoc = ((JTextField)pnlMulti.getComponent(i*3+1)).getText().trim();
+				if (!tmpDBLoc.isEmpty()) {
+					tmpDbList += tmpDBLoc;
+					if (i < noOfLines-1) {
+						tmpDbList += ",";
+					}
+				} else {
+					this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					JOptionPane.showMessageDialog(this, "Please choose valid database for 'Line " + (i+1) + "'", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+		}
+		
+		if (!tmpIsMultiDB.equals(Configuration.IS_MULTI_DB) || !Configuration.APP_SINGLE_DB_NAME.equals(txtDB.getText()) || !Configuration.APP_DB_NAME_LIST.equals(tmpDbList)) {
 			try {
-				Configuration.APP_DB_NAME = txtDB.getText();
-				LicenseFile lFile = new LicenseFile(Configuration.APP_DIR + Configuration.CONFIG_DIR + Configuration.CONFIG_FILE_LIC);
-				lFile.setDbName(Configuration.APP_DB_NAME);
-				lFile.rewriteFile();
+				Configuration.APP_SINGLE_DB_NAME = txtDB.getText();
+				Configuration.APP_DB_NAME_LIST = tmpDbList;
 				dbMsg = "\nNote:Database change will be effective only up on relogin to application";
+				LicenseFile lFile = new LicenseFile(Configuration.APP_DIR + Configuration.CONFIG_DIR + Configuration.CONFIG_FILE_LIC);
+				lFile.setDbName(Configuration.APP_SINGLE_DB_NAME);
+				lFile.setIsMultiDb(Configuration.IS_MULTI_DB);
+				lFile.setDbNameList(Configuration.APP_DB_NAME_LIST);
+				lFile.rewriteFile();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Error updating DB name:" + e.getMessage());
 			}
 		}
 		
 		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		JOptionPane.showMessageDialog(this, "Changes are saved successfully!" + dbMsg); 
+		JOptionPane.showMessageDialog(this, "Changes are saved successfully!" + dbMsg, "Message", dbMsg.isEmpty() ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE); 
 		
 		// warn about dependancy when enabling pump eff
 		if (!tmpOldPE.equals(Configuration.REP_SHOW_PUMP_EFF) && Configuration.REP_SHOW_PUMP_EFF.equals("1")) {
@@ -176,6 +202,22 @@ public class OtherSettings extends JDialog {
 			txtDB.setText(selFile.getAbsolutePath());
 		}
 	}
+	
+	private void changeDB(Integer idx) {
+		JOptionPane.showMessageDialog (this, "WARNING:Changing current database will affect configuration and test data (after relogin) based on new database you choose");
+		JFileChooser fileDlg = new JFileChooser();
+		fileDlg.setFileFilter(new FilesystemFilter("db", "PumpViewPro Database (*.db)"));
+		fileDlg.setDialogTitle("Choose Database");
+		fileDlg.showOpenDialog(this);
+		File selFile = fileDlg.getSelectedFile();
+		if (selFile == null) {
+			return;
+		} else if (!selFile.getName().endsWith(".db")){
+			JOptionPane.showMessageDialog(this, "Invalid database file. Please try again!","Error", JOptionPane.ERROR_MESSAGE);
+		} else {
+			((JTextField) pnlMulti.getComponent(idx-1)).setText(selFile.getAbsolutePath());
+		}
+	}
 
 	private void cmbISActionPerformed() {
 		txtISIRef.setText(refList.get(cmbIS.getSelectedItem().toString()));
@@ -212,6 +254,32 @@ public class OtherSettings extends JDialog {
 				chkMotEff.setSelected(false);
 			}
 		}
+	}
+
+	private void optSingle() {
+		if (optSingle.isSelected()) {
+			pnlSingle.setEnabled(true);
+			pnlMulti.setEnabled(false);
+			lblDB.setEnabled(true);
+			txtDB.setEnabled(true);
+			cmdChangeDB.setEnabled(true);
+			for(int i=0; i<pnlMulti.getComponentCount(); i++) {
+				pnlMulti.getComponent(i).setEnabled(false);
+			}
+		} else {
+			pnlSingle.setEnabled(false);
+			pnlMulti.setEnabled(true);
+			lblDB.setEnabled(false);
+			txtDB.setEnabled(false);
+			cmdChangeDB.setEnabled(false);
+			for(int i=0; i<pnlMulti.getComponentCount(); i++) {
+				pnlMulti.getComponent(i).setEnabled(true);
+			}
+		}
+	}
+
+	private void optMultipleStateChanged() {
+		optSingle();
 	}
 
 	private void initComponents() {
@@ -252,9 +320,14 @@ public class OtherSettings extends JDialog {
 		label11 = new JLabel();
 		lblNext = new JLabel();
 		pnlDB = new JPanel();
-		label12 = new JLabel();
+		pnlOpt = new JPanel();
+		optSingle = new JRadioButton();
+		optMultiple = new JRadioButton();
+		pnlSingle = new JPanel();
+		lblDB = new JLabel();
 		txtDB = new JTextField();
 		cmdChangeDB = new JButton();
+		pnlMulti = new JPanel();
 		cmdSave = new JButton();
 		cmdExit = new JButton();
 
@@ -266,7 +339,7 @@ public class OtherSettings extends JDialog {
 		Container contentPane = getContentPane();
 		contentPane.setLayout(new TableLayout(new double[][] {
 			{10, TableLayout.FILL, TableLayout.FILL, 10},
-			{10, TableLayout.PREFERRED, TableLayout.PREFERRED, 5}}));
+			{10, TableLayout.FILL, TableLayout.PREFERRED, 5}}));
 		((TableLayout)contentPane.getLayout()).setHGap(5);
 		((TableLayout)contentPane.getLayout()).setVGap(5);
 
@@ -498,32 +571,79 @@ public class OtherSettings extends JDialog {
 
 			//======== pnlDB ========
 			{
-				pnlDB.setBorder(new TitledBorder(null, "Database [All Assembly Lines]", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
+				pnlDB.setBorder(new TitledBorder(null, "Database", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
 					new Font("Arial", Font.BOLD, 14), Color.blue));
 				pnlDB.setLayout(new TableLayout(new double[][] {
-					{5, TableLayout.PREFERRED, TableLayout.FILL, 145, 5},
-					{5, 23, 23}}));
+					{5, TableLayout.FILL, 5},
+					{5, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
 				((TableLayout)pnlDB.getLayout()).setHGap(5);
 				((TableLayout)pnlDB.getLayout()).setVGap(5);
 
-				//---- label12 ----
-				label12.setText("Current Database");
-				label12.setFont(new Font("Arial", Font.BOLD, 12));
-				label12.setIcon(null);
-				pnlDB.add(label12, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+				//======== pnlOpt ========
+				{
+					pnlOpt.setLayout(new TableLayout(new double[][] {
+						{TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.FILL},
+						{TableLayout.PREFERRED}}));
+					((TableLayout)pnlOpt.getLayout()).setHGap(5);
+					((TableLayout)pnlOpt.getLayout()).setVGap(5);
 
-				//---- txtDB ----
-				txtDB.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-				txtDB.setBorder(new LineBorder(Color.lightGray));
-				txtDB.setEditable(false);
-				txtDB.setBackground(new Color(0xf7f7f7));
-				pnlDB.add(txtDB, new TableLayoutConstraints(2, 1, 3, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- optSingle ----
+					optSingle.setText("Single Database");
+					optSingle.setFont(new Font("Arial", Font.BOLD, 12));
+					optSingle.setSelected(true);
+					optSingle.addActionListener(e -> optSingle());
+					pnlOpt.add(optSingle, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-				//---- cmdChangeDB ----
-				cmdChangeDB.setText("Change...");
-				cmdChangeDB.setFont(new Font("Arial", Font.PLAIN, 12));
-				cmdChangeDB.addActionListener(e -> cmdChangeDBActionPerformed());
-				pnlDB.add(cmdChangeDB, new TableLayoutConstraints(3, 2, 3, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+					//---- optMultiple ----
+					optMultiple.setText("Multiple Databases");
+					optMultiple.setFont(new Font("Arial", Font.BOLD, 12));
+					optMultiple.addChangeListener(e -> optMultipleStateChanged());
+					pnlOpt.add(optMultiple, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				}
+				pnlDB.add(pnlOpt, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//======== pnlSingle ========
+				{
+					pnlSingle.setBorder(new TitledBorder(null, "Single Database For All Lines", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION,
+						new Font("Arial", Font.BOLD, 12), Color.blue));
+					pnlSingle.setLayout(new TableLayout(new double[][] {
+						{95, TableLayout.FILL, TableLayout.PREFERRED},
+						{TableLayout.PREFERRED}}));
+					((TableLayout)pnlSingle.getLayout()).setHGap(5);
+					((TableLayout)pnlSingle.getLayout()).setVGap(5);
+
+					//---- lblDB ----
+					lblDB.setText("Database Path");
+					lblDB.setFont(new Font("Arial", Font.BOLD, 12));
+					lblDB.setIcon(null);
+					pnlSingle.add(lblDB, new TableLayoutConstraints(0, 0, 0, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+					//---- txtDB ----
+					txtDB.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+					txtDB.setBorder(new LineBorder(Color.lightGray));
+					txtDB.setEditable(false);
+					txtDB.setBackground(new Color(0xf7f7f7));
+					pnlSingle.add(txtDB, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+					//---- cmdChangeDB ----
+					cmdChangeDB.setText("Change...");
+					cmdChangeDB.setFont(new Font("Arial", Font.PLAIN, 12));
+					cmdChangeDB.addActionListener(e -> cmdChangeDBActionPerformed());
+					pnlSingle.add(cmdChangeDB, new TableLayoutConstraints(2, 0, 2, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				}
+				pnlDB.add(pnlSingle, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//======== pnlMulti ========
+				{
+					pnlMulti.setBorder(new TitledBorder(null, "Multiple Databases (Seperate Database For Each Line)", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION,
+						new Font("Arial", Font.BOLD, 12), Color.blue));
+					pnlMulti.setLayout(new TableLayout(new double[][] {
+						{95, TableLayout.FILL, TableLayout.PREFERRED},
+						{}}));
+					((TableLayout)pnlMulti.getLayout()).setHGap(5);
+					((TableLayout)pnlMulti.getLayout()).setVGap(5);
+				}
+				pnlDB.add(pnlMulti, new TableLayoutConstraints(1, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 			}
 			tabSet.addTab("Database", pnlDB);
 		}
@@ -547,6 +667,11 @@ public class OtherSettings extends JDialog {
 		contentPane.add(cmdExit, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 		pack();
 		setLocationRelativeTo(getOwner());
+
+		//---- buttonGroup2 ----
+		ButtonGroup buttonGroup2 = new ButtonGroup();
+		buttonGroup2.add(optSingle);
+		buttonGroup2.add(optMultiple);
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
@@ -587,9 +712,14 @@ public class OtherSettings extends JDialog {
 	private JLabel label11;
 	private JLabel lblNext;
 	private JPanel pnlDB;
-	private JLabel label12;
+	private JPanel pnlOpt;
+	private JRadioButton optSingle;
+	private JRadioButton optMultiple;
+	private JPanel pnlSingle;
+	private JLabel lblDB;
 	private JTextField txtDB;
 	private JButton cmdChangeDB;
+	private JPanel pnlMulti;
 	private JButton cmdSave;
 	private JButton cmdExit;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
@@ -650,12 +780,69 @@ public class OtherSettings extends JDialog {
 		}
 		cmbDuration.setSelectedItem(Integer.valueOf(Configuration.LAST_USED_BACKUP_DURATION));
 		
-		txtDB.setText(Configuration.APP_DB_NAME);
-		txtDB.setCaretPosition(0);
+		
 		txtBkLoc.setText(Configuration.LAST_USED_BACKUP_LOCATION);
 		txtBkLoc.setCaretPosition(0);
 		lblDate.setText(Configuration.LAST_BACKUP_DATE);
 		lblNext.setText(Configuration.NEXT_BACKUP_DATE);
+		
+		// db
+		txtDB.setText(Configuration.APP_SINGLE_DB_NAME);
+		txtDB.setCaretPosition(0);
+		
+		Integer noOfLines = Integer.valueOf(Configuration.NUMBER_OF_LINES);
+		if (noOfLines > 1) {
+			TableLayout tmpLayout = (TableLayout) pnlMulti.getLayout();
+			String dbNameList[] = Configuration.APP_DB_NAME_LIST.split(",");
+			// construct line items for every line and populate db path
+			for(int i=0; i<noOfLines; i++) {
+				tmpLayout.insertRow(i, TableLayout.FILL);
+				//---- lblLine ----
+				JLabel lblLine = new JLabel();
+				lblLine.setText("Line " + (i+1) + " Database");
+				lblLine.setFont(new Font("Arial", Font.BOLD, 12));
+				lblLine.setIcon(null);
+				pnlMulti.add(lblLine, new TableLayoutConstraints(0, i, 0, i, TableLayoutConstraints.FULL, TableLayoutConstraints.CENTER));
+
+				//---- txtLine ----
+				JTextField txtLine = new JTextField();
+				txtLine.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtLine.setBorder(new LineBorder(Color.lightGray));
+				txtLine.setEditable(false);
+				txtLine.setBackground(new Color(0xf7f7f7));
+				pnlMulti.add(txtLine, new TableLayoutConstraints(1, i, 1, i, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- cmdLine ----
+				JButton cmdLine = new JButton();
+				cmdLine.setText("Change...");
+				cmdLine.setFont(new Font("Arial", Font.PLAIN, 12));
+				final Integer idx = i*3+2;
+				cmdLine.addActionListener(e -> changeDB(idx));
+				pnlMulti.add(cmdLine, new TableLayoutConstraints(2, i, 2, i, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				try {
+					txtLine.setText(dbNameList[i]);
+				} catch (Exception e) {
+					txtLine.setText("");
+				}
+			}
+			optSingle.setSelected(false);
+		} else {
+			// hide fields related to multi db
+			pnlOpt.setVisible(false);
+			pnlMulti.setVisible(false);
+			pnlSingle.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION,
+					new Font("Arial", Font.BOLD, 12), Color.blue));
+		}
+		if (Configuration.IS_MULTI_DB.equals("YES")) {
+			optSingle.setSelected(false);
+			optMultiple.setSelected(true);
+			pnlBackup.setBorder(new TitledBorder(null, "Automatic Backup [ASSEMBLY LINE:" + Configuration.LINE_NAME + "]", TitledBorder.CENTER, TitledBorder.TOP,
+					new Font("Arial", Font.BOLD, 14), Color.blue));
+		} else {
+			optSingle.setSelected(true);
+			optMultiple.setSelected(false);
+		}
+		optSingle();
 	}
 	
 private void associateFunctionKeys() {

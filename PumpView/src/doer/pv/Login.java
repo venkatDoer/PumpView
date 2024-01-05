@@ -123,10 +123,23 @@ public class Login extends JDialog {
 		try {
 			Database db = Database.getInstance();
 			
+			// point to appropriate DB & reload config in case of multi db mode
+			if (Configuration.IS_MULTI_DB.equals("YES")) {
+				db.closeInstance();
+				String[] dbNameList = Configuration.APP_DB_NAME_LIST.split(",");
+				Configuration.APP_DB_NAME = dbNameList[cmbLine.getSelectedIndex()];
+				if (!Configuration.initialize()) {
+					System.exit(-1);
+				}
+				db = Database.getInstance();
+			}
+			
+			
 			// fetch and load the result
 			MyResultSet res = null;
 			try {
 				res = db.executeQuery("select * from USER where name='" + txtName.getText().trim() + "'");
+				
 			} catch (SQLException se) {
 				if (se.getMessage().contains("no such table")) {
 					// seems the software is run first time
@@ -165,6 +178,7 @@ public class Login extends JDialog {
 			Configuration.USER_IS_ADMIN = curAdmin;
 			Configuration.USER_HAS_PUMP_ACCESS = curPumpAccess;
 			Configuration.USER_HAS_MODIFY_ACCESS = curModifyAccess;
+//			Configuration.IS_MULTI_DB = res1.getString('value');
 			if (!Configuration.LAST_USED_ISSTD.equals(selIS)) {
 				Configuration.LAST_USED_ISSTD = selIS;
 				Configuration.saveConfigValues("LAST_USED_ISSTD");
