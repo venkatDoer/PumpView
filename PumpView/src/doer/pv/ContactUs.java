@@ -115,7 +115,7 @@ public class ContactUs extends JDialog {
 			panel1.add(lblCompLogo, new TableLayoutConstraints(3, 0, 3, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 			//---- label18 ----
-			label18.setText("Version 2.0 Build 20230906");
+			label18.setText("Version 2.0 Build 20240208");
 			panel1.add(label18, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 		}
 
@@ -218,7 +218,7 @@ public class ContactUs extends JDialog {
 									.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 									.addComponent(lblURL))
 								.addComponent(label17, GroupLayout.PREFERRED_SIZE, 634, GroupLayout.PREFERRED_SIZE))
-							.addGap(0, 51, Short.MAX_VALUE))
+							.addGap(0, 53, Short.MAX_VALUE))
 						.addGroup(contentPaneLayout.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(panel2, GroupLayout.DEFAULT_SIZE, 726, Short.MAX_VALUE)))
