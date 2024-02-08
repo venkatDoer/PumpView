@@ -4233,6 +4233,7 @@ public class PumpView extends JFrame {
 			curStation.devPowerData.put("Frequency", curStation.readParamValue("Frequency" + threePhStr));
 		} catch (Exception e) {
 			curStation.devPowerData.clear();
+			e.printStackTrace();
 			logError(curStation.stationName + ": Error reading power params: " + e.getMessage());
 			throw e;
 		}

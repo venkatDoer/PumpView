@@ -55,6 +55,7 @@ public class Device {
 	// device handlers
 	private DeviceSerialReader devSerRdr = null;
 	private DeviceModbusReader devModRdr = null;
+	private DeviceHIOKI devHIOKI = null;
 	
 	// other variables
 	String strReading = "";
@@ -155,8 +156,12 @@ public class Device {
 		if (devType.equals("S")) { // 1. serial device
 			devSerRdr = DeviceSerialReader.getInstance(params, isCommonPort);
 		} else if (devType.equals("M")) { // 2. modbus device
-			devModRdr = DeviceModbusReader.getInstance(devAdr, wc, endianness.equals("LSB First"), params, isCommonPort, protocol, ipAddress, ipPort);
-		} else {
+			if(devName.equals("HIOKI Power Meter")) {
+				devHIOKI = DeviceHIOKI.getInstance(ipAddress, ipPort, protocol, isCommonPort);
+			}else {
+				devModRdr = DeviceModbusReader.getInstance(devAdr, wc, endianness.equals("LSB First"), params, isCommonPort, protocol, ipAddress, ipPort);
+			}
+		} else  {
 			throw new Exception("Invalid device type '" + devType + "' for device:" + devName);
 		}
 		
@@ -172,6 +177,8 @@ public class Device {
 			devSerRdr.closePort();
 		} else if (devModRdr != null) {
 			devModRdr.close();
+		} else if (devHIOKI != null) {
+			devHIOKI.close();
 		}
 	}
 	
@@ -210,7 +217,46 @@ public class Device {
 		// 1. read device reading
 		if (devType.equals("M")) { // modbus device
 			// System.out.println("reading from " + devModRdr + ",dev id:" + devAdr + " " + param.getParamRegType() + " adr:" + param.getParamAdr());
-			if (param.getParamRegType().equals("Coil")) {
+			if (devName.equals("HIOKI Power Meter")) {
+				// write and read pased on requested param
+				String paramName = param.getParamName();
+				if (paramName.contains("3 Ph") && !paramName.contains("Frequency")) {
+					if (paramName.equals("Current 3 Ph")) {
+						strReading = devHIOKI.readValue(":MEAS? I0");
+					} else if (paramName.equals("Voltage 3 Ph")) {
+						strReading = devHIOKI.readValue(":MEAS? UFND0");
+					} else if (paramName.equals("Power 3 Ph")) {
+						strReading = devHIOKI.readValue(":MEAS? P0");
+					} else {
+						throw new Exception("Param not found <" + paramName + ">");
+					}
+					try {
+						strReading = strReading.substring(strReading.indexOf(" ")+1).trim();
+					} catch (Exception ne) {
+						throw new Exception("HIOKI Power Meter Error:Unable to understand " + paramName + " reading:" + strReading);
+					}
+				} else { // single phase
+					if (paramName.equals("Current")) {
+						strReading = devHIOKI.readValue(":MEAS? I1");
+					} else if (paramName.equals("Voltage")) {
+						strReading = devHIOKI.readValue(":MEAS? UFND1");
+					} else if (paramName.equals("Power")) {
+						strReading = devHIOKI.readValue(":MEAS? P1");
+					} else if (paramName.contains("Frequency")) { // 1 or 3 phase
+						strReading = devHIOKI.readValue(":MEAS? FREQU1");
+					} else {
+						throw new Exception("Param not found <" + paramName + ">");
+					}
+					try {
+						strReading = strReading.substring(strReading.indexOf(" ")+1).trim();
+					} catch (Exception ne) {
+						throw new Exception("HIOKI Power Meter Error:Unable to understand " + paramName + " reading:" + strReading);
+					}
+				}
+				// GENERIC IMPLEMENTATION
+				floatReading = Math.abs(Float.parseFloat(strReading));
+			}
+			else if (param.getParamRegType().equals("Coil")) {
 				return devModRdr == null ? "false" : devModRdr.readCoil(devAdr, param.getParamAdr(),protocol) ? "true" : "false";
 			} else if (param.getParamRegType().equals("Input")) {
 					floatReading = (devModRdr.readInputReg(devAdr, Integer.valueOf(param.getParamAdr()),protocol))/1.0F;

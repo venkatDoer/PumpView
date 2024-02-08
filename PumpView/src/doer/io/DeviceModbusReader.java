@@ -3,6 +3,7 @@ package doer.io;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.HashMap;
 
@@ -10,6 +11,10 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import doer.pv.Configuration;
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 import net.wimpi.modbus.ModbusCoupler;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusSerialTransaction;
@@ -202,7 +207,7 @@ public class DeviceModbusReader {
 		iptransHolRegRead.setRetries(1);
 		iptransHolRegWrite = new ModbusTCPTransaction(con2);
 		iptransHolRegWrite.setRetries(1);
-				
+		
 		// prepare registers
 		icoil = new ReadCoilsRequest(0, 1);
 		ocoil = new WriteCoilRequest();
@@ -269,7 +274,7 @@ public class DeviceModbusReader {
 		writeCoil(devId, adr, val, protocol);
 	}
 	public synchronized void writeCoil(Integer deviceId, Integer adr, Boolean val, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				ocoil.setUnitID(deviceId);
 				ocoil.setReference(adr);
@@ -307,7 +312,7 @@ public class DeviceModbusReader {
 	}
 	
 	public synchronized Integer readInputReg(Integer deviceId, Integer adr, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				ireq.setUnitID(deviceId);
 				ireq.setReference(adr);
@@ -379,7 +384,7 @@ public class DeviceModbusReader {
 	}
 	
 	public synchronized Float readInputRegFloat(Integer deviceId, Integer adr, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				ireq.setUnitID(deviceId);
 				ireq.setReference(adr);
@@ -443,7 +448,7 @@ public class DeviceModbusReader {
 	}
 
 	public synchronized Integer readHoldingReg(Integer deviceId, Integer adr, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				mreq.setUnitID(devId);
 				mreq.setReference(adr);
@@ -514,7 +519,7 @@ public class DeviceModbusReader {
 		return readHoldingRegFloat(devId, adr, protocol);
 	}
 	public Float readHoldingRegFloat(Integer deviceId, Integer adr, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				mreq.setUnitID(deviceId);
 				mreq.setReference(adr);
@@ -576,7 +581,7 @@ public class DeviceModbusReader {
 		writeHoldingReg(devId, adr, val, protocol);
 	}
 	public synchronized void writeHoldingReg(Integer deviceId, Integer adr, Integer val, String protocol) throws Exception {
-		if(Protocol.equals("RTU")) {
+		if(protocol.equals("RTU")) {
 			if (adr >= 0) {
 				// prepare request for the address to be written and write the data
 				Register r[] = {null,null};
