@@ -142,6 +142,7 @@ public class Configuration {
 	public static String DB_NAME = "\\pumpview.db";
 	public static String JDBC_NAME = "jdbc:sqlite";
 	public static String DB_URL = "";
+	public static boolean IS_VFD = false;
 	
 	// app ISI specific table names	
 	public static String PUMPTYPE = "PUMPTYPE";

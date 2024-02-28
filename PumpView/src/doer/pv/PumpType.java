@@ -297,12 +297,12 @@ public class PumpType extends JDialog {
 			}
 			i = 0;
 			for(String key : testListRt.keySet()) {
-				db.executeUpdate("insert into " + Configuration.TESTNAMES_ROUTINE + " values ('" + recentPumpId + "','" + key + "'," + i + ",'','')");
+				db.executeUpdate("insert into " + Configuration.TESTNAMES_ROUTINE + "(pump_type_id,code,seq) values ('" + recentPumpId + "','" + key + "'," + i + ")");
 				++i;
 			}
 			i = 0;
 			for(String key : testListType.keySet()) {
-				db.executeUpdate("insert into " + Configuration.TESTNAMES_TYPE + " values ('" + recentPumpId + "','" + key + "'," + i + ",'','')");
+				db.executeUpdate("insert into " + Configuration.TESTNAMES_TYPE + "(pump_type_id,code,seq) values ('" + recentPumpId + "','" + key + "'," + i + ")");
 				++i;
 			}
 			
@@ -848,7 +848,7 @@ public class PumpType extends JDialog {
 	
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-		panel1 = new JPanel();
+		pnlHead = new JPanel();
 		label5 = new JLabel();
 		txtSearch = new JTextField();
 		scrlTypeList = new JScrollPane();
@@ -984,21 +984,21 @@ public class PumpType extends JDialog {
 		((TableLayout)contentPane.getLayout()).setHGap(5);
 		((TableLayout)contentPane.getLayout()).setVGap(5);
 
-		//======== panel1 ========
+		//======== pnlHead ========
 		{
-			panel1.setBorder(new TitledBorder(null, "Existing Pump Models [All Assembly Lines]", TitledBorder.LEADING, TitledBorder.TOP,
+			pnlHead.setBorder(new TitledBorder(null, "Existing Pump Models [All Assembly Lines]", TitledBorder.LEADING, TitledBorder.TOP,
 				new Font("Arial", Font.BOLD, 14), Color.blue));
-			panel1.setFocusable(false);
-			panel1.setLayout(new TableLayout(new double[][] {
+			pnlHead.setFocusable(false);
+			pnlHead.setLayout(new TableLayout(new double[][] {
 				{TableLayout.PREFERRED, TableLayout.FILL},
 				{5, 27, TableLayout.FILL, TableLayout.PREFERRED}}));
-			((TableLayout)panel1.getLayout()).setHGap(5);
-			((TableLayout)panel1.getLayout()).setVGap(5);
+			((TableLayout)pnlHead.getLayout()).setHGap(5);
+			((TableLayout)pnlHead.getLayout()).setVGap(5);
 
 			//---- label5 ----
 			label5.setText("Search");
 			label5.setFont(new Font("Arial", Font.PLAIN, 14));
-			panel1.add(label5, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			pnlHead.add(label5, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 			//---- txtSearch ----
 			txtSearch.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 16));
@@ -1009,7 +1009,7 @@ public class PumpType extends JDialog {
 					txtSearchKeyReleased();
 				}
 			});
-			panel1.add(txtSearch, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			pnlHead.add(txtSearch, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 			//======== scrlTypeList ========
 			{
@@ -1042,7 +1042,7 @@ public class PumpType extends JDialog {
 				});
 				scrlTypeList.setViewportView(tblTypeList);
 			}
-			panel1.add(scrlTypeList, new TableLayoutConstraints(0, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			pnlHead.add(scrlTypeList, new TableLayoutConstraints(0, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 			//---- cmdChoose ----
 			cmdChoose.setText("Choose Selected Pump   [Enter]");
@@ -1052,9 +1052,9 @@ public class PumpType extends JDialog {
 			cmdChoose.setRolloverSelectedIcon(null);
 			cmdChoose.setDefaultCapable(false);
 			cmdChoose.addActionListener(e -> cmdChooseActionPerformed());
-			panel1.add(cmdChoose, new TableLayoutConstraints(0, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+			pnlHead.add(cmdChoose, new TableLayoutConstraints(0, 3, 1, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 		}
-		contentPane.add(panel1, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+		contentPane.add(pnlHead, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 		//======== pnlPump ========
 		{
@@ -1773,7 +1773,7 @@ public class PumpType extends JDialog {
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-	private JPanel panel1;
+	private JPanel pnlHead;
 	private JLabel label5;
 	private JTextField txtSearch;
 	private JScrollPane scrlTypeList;
@@ -2044,6 +2044,11 @@ public class PumpType extends JDialog {
 		// disable delete if user does not have admin access
 		if (Configuration.USER_IS_ADMIN.equals("0")) {
 			cmdDel.setEnabled(false);
+		}
+		
+		if (Configuration.IS_MULTI_DB.equals("YES")) {
+			pnlHead.setBorder(new TitledBorder(null, "Existing Pump Models [ASSEMBLY LINE:" + Configuration.LINE_NAME + "]", TitledBorder.CENTER, TitledBorder.TOP,
+				new Font("Arial", Font.BOLD, 14), Color.blue));
 		}
 		
 		associateFunctionKeys();

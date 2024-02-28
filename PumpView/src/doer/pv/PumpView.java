@@ -2953,7 +2953,7 @@ public class PumpView extends JFrame {
 		String curPhase = "Single";
 		String curAmps = "2.700";
 		String curSpeed = "2880";
-		String curFreq = "50.00";
+		String curFreq = "50";
 		
 		String curRecentPumpSno = "";
 		String curRecentMotSno = "";
@@ -3329,6 +3329,17 @@ public class PumpView extends JFrame {
 							curStation.curPumpPhase = res.getString("phase");
 							curStation.curOtherVoltsDis = res.getString("other_volts_disabled");
 							Configuration.OP_PUMP_TYPE.put(curStation.stationName, res.getString("type"));
+							
+							// write parameter value to the VFD Drive
+							if(Configuration.IS_VFD) {
+								
+								try {
+									curStation.writeParamValue("VDF_Voltage", (Integer.parseInt(lblVolts.getText()))*10);
+									curStation.writeParamValue("VDF_Frequency", (Integer.parseInt(res.getString("freq")))*100);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
 							
 							// update the pump type label
 							stationLabelList.get(i-1).setText(i + " [" + curStation.curPumpType + "]");
@@ -4185,6 +4196,17 @@ public class PumpView extends JFrame {
 			if (res.next()) {
 				tmpId = res.getInt("seq");
 				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'Flow A', 'NA', '', '#0.00', 'NA')");
+			}
+		}
+		
+		if (devName.isEmpty() || devName.equals("VFD")) {
+			db.executeUpdate("delete from DEVICE where line='" + Configuration.LINE_NAME + "' and station_no='" + stationId + "' and dev_name='VFD'");
+			db.executeUpdate("insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'VFD', 'NA', '', 'M', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'true', 'RTU', '', '2200')");
+			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
+			if (res.next()) {
+				tmpId = res.getInt("seq");
+				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF_Voltage', 'NA', '', '#0.0', 'NA')");
+				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF_Frequency', 'NA', '', '#0.00', 'NA')");
 			}
 		}
 	}

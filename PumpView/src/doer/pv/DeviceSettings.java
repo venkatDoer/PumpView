@@ -953,6 +953,7 @@ public class DeviceSettings extends JDialog {
 						{null, null, null, null, null, null, null, null, null},
 						{null, null, null, null, null, null, null, null, null},
 						{null, null, null, null, null, null, null, null, null},
+						{null, null, null, null, null, null, null, null, null},
 					},
 					new String[] {
 						"ID", "Instrument Name", "Make", "Model", "SNo.", "Calib. Date", "Due Date", "Agency", "Reminder On/Off"
