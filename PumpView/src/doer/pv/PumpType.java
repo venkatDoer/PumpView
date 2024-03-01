@@ -190,6 +190,7 @@ public class PumpType extends JDialog {
 			// no duplicate - so add it
 			String curCt = cmbCat.getSelectedItem().toString().trim();
 			String curNonISIModel = chkISIModel.isSelected() ? "Y" : "N";
+			String curVFD = chkVFD.isSelected() ? "true" : "false";
 			String curDelSize = txtDelSize.getText().trim();
 			String curSucSize = txtSucSize.getText().trim();
 			// ISI handling
@@ -270,7 +271,7 @@ public class PumpType extends JDialog {
 							"conn , head_unit , bore_size , no_of_stage , " +
 							"recent_pump_sno, recent_motor_sno, " +
 							"non_isi_model , category , ins_class , other_volts , other_volts_disabled , self_priming_time , suction_lift , "+
-							"pres_size , dlwl , submergence , min_op_pres, no_of_poles, cap_rating, cap_volt, type_test_freq, auto_valve_type) values ('" + curType + "','" + curDesc + "','" + curDelSize + "','" + curSucSize + "','" + curMotEff + "','" + 
+							"pres_size , dlwl , submergence , min_op_pres, no_of_poles, cap_rating, cap_volt, type_test_freq, auto_valve_type, is_vfd) values ('" + curType + "','" + curDesc + "','" + curDelSize + "','" + curSucSize + "','" + curMotEff + "','" + 
 					curHead + "','" + curMotIp + "','" + curDisUnit + "','" + curDis + "','" + curDisL + "','" + curDisH + "','" +  
 					curEff + "','" + curHeadL + "','" + curHeadH + "','" + curGauge + "','" + 
 					curMotType + "','" + curKW + "','" + curHP + "','" + 
@@ -279,7 +280,7 @@ public class PumpType extends JDialog {
 					curRecentPumpSno + "','" + curRecentMotSno + "','" +
 					curNonISIModel + "','" + curCt + "','" + curIns + "','" + curOtherVolts +"','" + 
 					curOtherVoltsDis +"','" + curSP +"','" + curSL +"','" +
-					curPresSz +"','" + curDLWL +"','" + curSub + "','" + curOpPres + "','" + curPole + "','" + curCapRate + "','" + curCapVolt + "','" + curTypeTestFreq + "','" + curAutoValveType +"')");
+					curPresSz +"','" + curDLWL +"','" + curSub + "','" + curOpPres + "','" + curPole + "','" + curCapRate + "','" + curCapVolt + "','" + curTypeTestFreq + "','" + curAutoValveType +"','" + curVFD +"')");
 		
 			
 			// recent pump type id
@@ -416,6 +417,7 @@ public class PumpType extends JDialog {
 			String curDesc = txtDesc.getText().trim();
 			String curCt = cmbCat.getSelectedItem().toString().trim();
 			String curNonISIModel = chkISIModel.isSelected() ? "Y" : "N";
+			String curVFD = chkVFD.isSelected() ? "true" : "false"; 
 			String curDelSize = txtDelSize.getText().trim();
 			String curSucSize = txtSucSize.getText().trim();
 			
@@ -496,7 +498,7 @@ public class PumpType extends JDialog {
 					"', recent_pump_sno='" + curRecentPumpSno + "', recent_motor_sno='" + curRecentMotSno + "', non_isi_model='" + curNonISIModel + "', category='" + curCt + "', ins_class='" + curIns + "', other_volts='" + curOtherVolts +
 					"', other_volts_disabled='" + curOtherVoltsDis +"', self_priming_time='" + curSP + "', suction_lift='" + curSL + 
 					"', pres_size='" + curPresSz + "', dlwl='" + curDLWL + "', submergence='" + curSub +"', min_op_pres='" + curOpPres + 
-					"', no_of_poles='" + curPole +"', cap_rating='" + curCapRate +"', cap_volt='" + curCapVolt + "' where pump_type_id='" + selPumpTypeId +"'");
+					"', no_of_poles='" + curPole +"', cap_rating='" + curCapRate +"', cap_volt='" + curCapVolt + "', is_vfd='" + curVFD + "' where pump_type_id='" + selPumpTypeId +"'");
 		
 			
 			// add the category into combo box if not exist already
@@ -813,7 +815,7 @@ public class PumpType extends JDialog {
 
 	private void txtNextPumpNoKeyReleased() {
 		findPrevPumpNo(true);
-	}
+	}
 	private void txtNextMotNoKeyReleased() {
 		findPrevMotorNo();
 	}
@@ -869,6 +871,7 @@ public class PumpType extends JDialog {
 		label23 = new JLabel();
 		label2 = new JLabel();
 		cmbCat = new JComboBox();
+		chkVFD = new JCheckBox();
 		chkISIModel = new JCheckBox();
 		cmdNonISITol = new JButton();
 		pnlFeat = new JPanel();
@@ -1071,7 +1074,7 @@ public class PumpType extends JDialog {
 			{
 				panel3.setLayout(new TableLayout(new double[][] {
 					{134, 122, 300, 155, TableLayout.FILL},
-					{TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
+					{TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED}}));
 				((TableLayout)panel3.getLayout()).setHGap(5);
 				((TableLayout)panel3.getLayout()).setVGap(5);
 
@@ -1156,6 +1159,13 @@ public class PumpType extends JDialog {
 				cmbCat.setToolTipText("Category of the pump like Sewage Pump, etc");
 				cmbCat.setEditable(true);
 				panel3.add(cmbCat, new TableLayoutConstraints(1, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkVFD ----
+				chkVFD.setText("VFD");
+				chkVFD.setFont(new Font("Arial", Font.PLAIN, 12));
+				chkVFD.setToolTipText("Check this if this pump type is a non-ISI model (may be a trial model) and has to be ignored while reporting to ISI");
+				chkVFD.addActionListener(e -> chkISIModelActionPerformed());
+				panel3.add(chkVFD, new TableLayoutConstraints(0, 3, 0, 3, TableLayoutConstraints.CENTER, TableLayoutConstraints.FULL));
 
 				//---- chkISIModel ----
 				chkISIModel.setText("Non-ISI Model");
@@ -1794,6 +1804,7 @@ public class PumpType extends JDialog {
 	private JLabel label23;
 	private JLabel label2;
 	private JComboBox cmbCat;
+	private JCheckBox chkVFD;
 	private JCheckBox chkISIModel;
 	private JButton cmdNonISITol;
 	private JPanel pnlFeat;
@@ -2094,6 +2105,7 @@ public class PumpType extends JDialog {
 						txtDesc.setText(res.getString("desc"));
 						chkISIModel.setSelected(res.getString("non_isi_model").equals("Y"));
 						chkISIModelActionPerformed();
+						chkVFD.setSelected(res.getString("is_vfd").equals("true"));
 						txtDelSize.setText(res.getString("delivery_size"));
 						txtSucSize.setText(res.getString("suction_size"));
 						txtMotEff.setText(res.getString("mot_eff"));

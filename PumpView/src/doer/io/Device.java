@@ -212,9 +212,16 @@ public class Device {
 		devModRdr.writeHoldingReg(devAdr, adr, val, protocol);
 	}
 	
+	/* function to write into a holding register */
+	public synchronized void writeSingleHoldingReg(Integer adr, Integer val) throws Exception {
+		devModRdr.writeSingleHoldingReg(devAdr, adr, val, protocol);
+	}
+	
 	// function to read value for a register
 	public synchronized String readParam(Parameter param) throws Exception {
 		// 1. read device reading
+
+		
 		if (devType.equals("M")) { // modbus device
 			// System.out.println("reading from " + devModRdr + ",dev id:" + devAdr + " " + param.getParamRegType() + " adr:" + param.getParamAdr());
 			if (devName.equals("HIOKI Power Meter")) {

@@ -27,6 +27,7 @@ import net.wimpi.modbus.msg.ReadMultipleRegistersRequest;
 import net.wimpi.modbus.msg.ReadMultipleRegistersResponse;
 import net.wimpi.modbus.msg.WriteCoilRequest;
 import net.wimpi.modbus.msg.WriteMultipleRegistersRequest;
+import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
 import net.wimpi.modbus.net.SerialConnection;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.procimg.Register;
@@ -65,6 +66,7 @@ public class DeviceModbusReader {
 	ReadInputRegistersRequest ireq = null;
 	ReadMultipleRegistersRequest mreq = null;
 	WriteMultipleRegistersRequest wreq = null;
+	WriteSingleRegisterRequest wsreq = null;
 	
 	// others
 	private SerialParameters params = null;
@@ -220,6 +222,7 @@ public class DeviceModbusReader {
 		mreq.setWordCount(wCount);
 				
 		wreq = new WriteMultipleRegistersRequest();
+		wsreq = new WriteSingleRegisterRequest();
 		
 	}
 	
@@ -613,6 +616,46 @@ public class DeviceModbusReader {
 				wreq.setRegisters(r);
 				
 				iptransHolRegWrite.setRequest(wreq);
+				try {
+					iptransHolRegWrite.execute();
+				} catch (ModbusException e) {
+					errMsg = "Error while executing transaction:" + iptransHolRegWrite.getRequest().getHexMessage() + " in IP Address" + ipaddr + ":" + e.getMessage();
+					throw new Exception(errMsg);
+				}
+			}
+		}
+	}
+	
+	/* function to write into a single holding register */
+	public synchronized void writeSingleHoldingReg(Integer deviceId, Integer adr, Integer val, String protocol) throws Exception {
+		if(protocol.equals("RTU")) {
+			if (adr >= 0) {
+				// prepare request for the address to be written and write the data
+				Register r = new SimpleRegister(val); // msb
+		
+				wsreq.setUnitID(deviceId);
+				wsreq.setReference(adr);
+				wsreq.setRegister(r);
+				wsreq.setHeadless();
+				
+				transHolRegWrite.setRequest(wsreq);
+				try {
+					transHolRegWrite.execute();
+				} catch (ModbusException e) {
+					errMsg = "Error while executing transaction:" + transHolRegWrite.getRequest().getHexMessage() + " in port:" + params.getPortName() + ":" + e.getMessage();
+					throw new Exception(errMsg);
+				}
+			}
+		}else {
+			if (adr >= 0) {
+				// prepare request for the address to be written and write the data
+				Register r = new SimpleRegister(val); // msb
+		
+				wsreq.setUnitID(deviceId);
+				wsreq.setReference(adr);
+				wsreq.setRegister(r);
+				
+				iptransHolRegWrite.setRequest(wsreq);
 				try {
 					iptransHolRegWrite.execute();
 				} catch (ModbusException e) {

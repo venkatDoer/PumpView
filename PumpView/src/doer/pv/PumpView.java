@@ -30,6 +30,7 @@ import java.util.EventObject;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import javax.script.ScriptEngine;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -62,6 +63,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -88,8 +91,10 @@ import doer.io.DeviceModbusReader;
 import doer.io.DeviceSerialReader;
 import doer.io.MyResultSet;
 import doer.io.Station;
+import doer.pv.Configuration;
 import info.clearthought.layout.TableLayout;
 import info.clearthought.layout.TableLayoutConstraints;
+
 
 /**
  * @author VENKATESAN SELVARAJ @ Doer Automation
@@ -2983,7 +2988,7 @@ public class PumpView extends JFrame {
 				"conn text, head_unit text, bore_size text, no_of_stage text, " +
 				"recent_pump_sno text, recent_motor_sno text, " +
 				"non_isi_model text, category text, ins_class text, other_volts text, other_volts_disabled text, self_priming_time text, suction_lift text, "+
-				"pres_size text, dlwl text, submergence text, min_op_pres text, no_of_poles text, cap_rating text, cap_volt text, type_test_freq text, auto_valve_type text default 'P')");
+				"pres_size text, dlwl text, submergence text, min_op_pres text, no_of_poles text, cap_rating text, cap_volt text, type_test_freq text, auto_valve_type text default 'P', is_vfd text default 'false')");
 
 		db.executeUpdate("insert into " + Configuration.PUMPTYPE + "(type, desc, delivery_size , suction_size , mot_eff , head , mot_ip , " + 
 				"discharge_unit , discharge , discharge_low , discharge_high , overall_eff , head_low , head_high , gauge_distance , " +
@@ -3189,6 +3194,7 @@ public class PumpView extends JFrame {
 				String curPumpTypeId = res.getString("pump_type_id");
 				String prevPumpTypeId = Configuration.LAST_USED_PUMP_TYPE_ID;
 				Boolean isNonISIModel = res.getString("non_isi_model").equals("Y");
+				Configuration.IS_VFD = res.getString("is_vfd").equals("true");
 				if (isAppInit || action.equals("choose") || (curPumpTypeId.equals(prevPumpTypeId) && action.equals("update"))) {
 					// update name plate details being displayed as chosen pump
 					String curPumpType = res.getString("type");
@@ -3332,11 +3338,23 @@ public class PumpView extends JFrame {
 							
 							// write parameter value to the VFD Drive
 							if(Configuration.IS_VFD) {
+								String convFact = "1";
 								
 								try {
-									curStation.writeParamValue("VDF_Voltage", (Integer.parseInt(lblVolts.getText()))*10);
-									curStation.writeParamValue("VDF_Frequency", (Integer.parseInt(res.getString("freq")))*100);
+									MyResultSet res1 = db.executeQuery("select a.* from DEVICE_PARAM a JOIN DEVICE b on b.dev_id=a.dev_id where b.dev_name = 'VFD'");
+									
+									while(res1.next()) {
+										if(!res1.getString("conv_factor").equals("")) {
+											convFact = res1.getString("conv_factor");
+										}
+										if(res1.getString("param_name").contains("Voltage")) {
+											curStation.writeSingleParamValue(res1.getString("param_name"), (Integer.parseInt( jsEng.eval(lblVolts.getText() + convFact).toString())));
+										}else{
+											curStation.writeSingleParamValue(res1.getString("param_name"), (Integer.parseInt( jsEng.eval(res.getString("freq") + convFact).toString())));
+										}
+									}
 								} catch (Exception e) {
+									JOptionPane.showMessageDialog(this, "Error while writing the value to the Drive" + e.getMessage());
 									e.printStackTrace();
 								}
 							}
@@ -3350,7 +3368,7 @@ public class PumpView extends JFrame {
 							// set suction lift in case of any change
 							if(Configuration.LAST_USED_ISSTD.startsWith("IS 8472:")) {
 								Configuration.CUR_SUC_LIFT = res.getFloat("suction_lift");
-								if (txtSPSec.getText().isEmpty()) {
+																	if (txtSPSec.getText().isEmpty()) {
 									txtSPSuc.setText(Configuration.CUR_SUC_LIFT.toString());
 								}
 								
@@ -4205,8 +4223,8 @@ public class PumpView extends JFrame {
 			res = db.executeQuery("select seq from sqlite_sequence where name='DEVICE'");
 			if (res.next()) {
 				tmpId = res.getInt("seq");
-				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF_Voltage', 'NA', '', '#0.0', 'NA')");
-				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF_Frequency', 'NA', '', '#0.00', 'NA')");
+				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF Voltage', 'NA', '', '', 'NA')");
+				db.executeUpdate("insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (" + tmpId + ", 'VDF Frequency', 'NA', '', '', 'NA')");
 			}
 		}
 	}
@@ -6010,7 +6028,8 @@ public class PumpView extends JFrame {
 	String lastManualTest = "";
 	Boolean reTest = false;
 	
-
+	ScriptEngineManager jsMgr = new ScriptEngineManager();
+	ScriptEngine jsEng = jsMgr.getEngineByName("JavaScript");
 
 	// for live reading (TBD: need to optimize)
 	HashMap<String, String> liveReadData = new HashMap<String, String>();

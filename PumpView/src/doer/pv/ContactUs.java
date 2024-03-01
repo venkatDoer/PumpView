@@ -115,7 +115,7 @@ public class ContactUs extends JDialog {
 			panel1.add(lblCompLogo, new TableLayoutConstraints(3, 0, 3, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 			//---- label18 ----
-			label18.setText("Version 2.0 Build 20240228");
+			label18.setText("Version 2.0 Build 20240301");
 			panel1.add(label18, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 		}
 

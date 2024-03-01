@@ -395,7 +395,7 @@
            </void>
            <void method="setProperty">
             <string>$rowSpecs</string>
-            <string>pref, pref, pref, pref, pref</string>
+            <string>pref, pref, pref, pref</string>
            </void>
            <void method="setProperty">
             <string>hGap</string>
@@ -877,7 +877,7 @@
             <string>javax.swing.JCheckBox</string>
             <void method="setProperty">
              <string>text</string>
-             <string>Non-ISI Model</string>
+             <string>VFD</string>
             </void>
             <void method="setProperty">
              <string>font</string>
@@ -886,6 +886,45 @@
               <int>0</int>
               <int>12</int>
              </object>
+            </void>
+            <void method="setProperty">
+             <string>toolTipText</string>
+             <string>Check this if this pump type is a non-ISI model (may be a trial model) and has to be ignored while reporting to ISI</string>
+            </void>
+            <void property="name">
+             <string>chkVFD</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.ActionListener</string>
+              <string>actionPerformed</string>
+              <string>chkISIModelActionPerformed</string>
+              <boolean>false</boolean>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>3</int>
+            </void>
+            <void method="setProperty">
+             <string>hAlign</string>
+             <int>1</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JCheckBox</string>
+            <void method="setProperty">
+             <string>text</string>
+             <string>Non-ISI Model</string>
+            </void>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font3"/>
             </void>
             <void method="setProperty">
              <string>toolTipText</string>
