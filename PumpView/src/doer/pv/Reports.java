@@ -1167,7 +1167,7 @@ public class Reports extends JDialog {
 							{TableLayout.FILL}}));
 
 						//---- lblTestedBy ----
-						lblTestedBy.setText("Tested By");
+						lblTestedBy.setText("Tested");
 						lblTestedBy.setFont(new Font("Arial", Font.PLAIN, 13));
 						lblTestedBy.setHorizontalAlignment(SwingConstants.CENTER);
 						lblTestedBy.setName("label");
@@ -1175,7 +1175,7 @@ public class Reports extends JDialog {
 						pnlBot.add(lblTestedBy, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 						//---- label102 ----
-						label102.setText("Approved By");
+						label102.setText("Approved");
 						label102.setFont(new Font("Arial", Font.PLAIN, 13));
 						label102.setHorizontalAlignment(SwingConstants.CENTER);
 						label102.setName("label");
@@ -1183,7 +1183,7 @@ public class Reports extends JDialog {
 						pnlBot.add(label102, new TableLayoutConstraints(3, 0, 3, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 						//---- lblVerBy14 ----
-						lblVerBy14.setText("Verified By");
+						lblVerBy14.setText("Verified");
 						lblVerBy14.setFont(new Font("Arial", Font.PLAIN, 13));
 						lblVerBy14.setHorizontalAlignment(SwingConstants.CENTER);
 						lblVerBy14.setName("label");
@@ -3015,7 +3015,7 @@ public class Reports extends JDialog {
 						{TableLayout.FILL}}));
 
 					//---- lblTestedBy ----
-					lblTestedBy.setText("Tested By");
+					lblTestedBy.setText("Tested");
 					lblTestedBy.setFont(new Font("Arial", Font.PLAIN, 13));
 					lblTestedBy.setHorizontalAlignment(SwingConstants.CENTER);
 					lblTestedBy.setName("label");
@@ -3023,7 +3023,7 @@ public class Reports extends JDialog {
 					pnlBot.add(lblTestedBy, new TableLayoutConstraints(1, 0, 1, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- label102 ----
-					label102.setText("Approved By");
+					label102.setText("Approved");
 					label102.setFont(new Font("Arial", Font.PLAIN, 13));
 					label102.setHorizontalAlignment(SwingConstants.CENTER);
 					label102.setName("label");
@@ -3031,7 +3031,7 @@ public class Reports extends JDialog {
 					pnlBot.add(label102, new TableLayoutConstraints(3, 0, 3, 0, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 					//---- lblVerBy14 ----
-					lblVerBy14.setText("Verified By");
+					lblVerBy14.setText("Verified");
 					lblVerBy14.setFont(new Font("Arial", Font.PLAIN, 13));
 					lblVerBy14.setHorizontalAlignment(SwingConstants.CENTER);
 					lblVerBy14.setName("label");
@@ -4189,21 +4189,21 @@ public class Reports extends JDialog {
 									pnlBot2.add(lblDt2, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- lblTestedBy2 ----
-									lblTestedBy2.setText("Tested By");
+									lblTestedBy2.setText("Tested");
 									lblTestedBy2.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblTestedBy2.setHorizontalAlignment(SwingConstants.CENTER);
 									lblTestedBy2.setName("label");
 									pnlBot2.add(lblTestedBy2, new TableLayoutConstraints(3, 5, 3, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- lblVerBy13 ----
-									lblVerBy13.setText("Verified By");
+									lblVerBy13.setText("Verified");
 									lblVerBy13.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblVerBy13.setHorizontalAlignment(SwingConstants.CENTER);
 									lblVerBy13.setName("label");
 									pnlBot2.add(lblVerBy13, new TableLayoutConstraints(4, 5, 4, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- label23 ----
-									label23.setText("Approved By");
+									label23.setText("Approved");
 									label23.setFont(new Font("Arial", Font.PLAIN, 13));
 									label23.setHorizontalAlignment(SwingConstants.CENTER);
 									label23.setName("label");
@@ -5108,21 +5108,21 @@ public class Reports extends JDialog {
 								((TableLayout)pnlBotBot3.getLayout()).setVGap(5);
 
 								//---- lblTestedBy3 ----
-								lblTestedBy3.setText("Tested By");
+								lblTestedBy3.setText("Tested");
 								lblTestedBy3.setFont(new Font("Arial", Font.PLAIN, 13));
 								lblTestedBy3.setHorizontalAlignment(SwingConstants.CENTER);
 								lblTestedBy3.setName("label");
 								pnlBotBot3.add(lblTestedBy3, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 								//---- label103 ----
-								label103.setText("Approved By");
+								label103.setText("Approved");
 								label103.setFont(new Font("Arial", Font.PLAIN, 13));
 								label103.setHorizontalAlignment(SwingConstants.CENTER);
 								label103.setName("label");
 								pnlBotBot3.add(label103, new TableLayoutConstraints(3, 2, 3, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 								//---- lblVerBy12 ----
-								lblVerBy12.setText("Verified By");
+								lblVerBy12.setText("Verified");
 								lblVerBy12.setFont(new Font("Arial", Font.PLAIN, 13));
 								lblVerBy12.setHorizontalAlignment(SwingConstants.CENTER);
 								lblVerBy12.setName("label");
@@ -6058,21 +6058,21 @@ public class Reports extends JDialog {
 										pnlBot41.add(lblDt41, new TableLayoutConstraints(2, 5, 2, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- lblTestedBy41 ----
-										lblTestedBy41.setText("Tested By");
+										lblTestedBy41.setText("Tested");
 										lblTestedBy41.setFont(new Font("Arial", Font.PLAIN, 13));
 										lblTestedBy41.setHorizontalAlignment(SwingConstants.CENTER);
 										lblTestedBy41.setName("label");
 										pnlBot41.add(lblTestedBy41, new TableLayoutConstraints(3, 5, 3, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- lblVerBy11 ----
-										lblVerBy11.setText("Verified By");
+										lblVerBy11.setText("Verified");
 										lblVerBy11.setFont(new Font("Arial", Font.PLAIN, 13));
 										lblVerBy11.setHorizontalAlignment(SwingConstants.CENTER);
 										lblVerBy11.setName("label");
 										pnlBot41.add(lblVerBy11, new TableLayoutConstraints(4, 5, 4, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- label67 ----
-										label67.setText("Approved By");
+										label67.setText("Approved");
 										label67.setFont(new Font("Arial", Font.PLAIN, 13));
 										label67.setHorizontalAlignment(SwingConstants.CENTER);
 										label67.setName("label");
@@ -7198,21 +7198,21 @@ public class Reports extends JDialog {
 										pnlBot42.add(lblTotTypeTest42, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- lblTestedBy42 ----
-										lblTestedBy42.setText("Tested By");
+										lblTestedBy42.setText("Tested");
 										lblTestedBy42.setFont(new Font("Arial", Font.PLAIN, 13));
 										lblTestedBy42.setHorizontalAlignment(SwingConstants.CENTER);
 										lblTestedBy42.setName("label");
 										pnlBot42.add(lblTestedBy42, new TableLayoutConstraints(3, 2, 4, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- lblVerBy9 ----
-										lblVerBy9.setText("Verified By");
+										lblVerBy9.setText("Verified");
 										lblVerBy9.setFont(new Font("Arial", Font.PLAIN, 13));
 										lblVerBy9.setHorizontalAlignment(SwingConstants.CENTER);
 										lblVerBy9.setName("label");
 										pnlBot42.add(lblVerBy9, new TableLayoutConstraints(5, 2, 5, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 										//---- label98 ----
-										label98.setText("Approved By");
+										label98.setText("Approved");
 										label98.setFont(new Font("Arial", Font.PLAIN, 13));
 										label98.setHorizontalAlignment(SwingConstants.CENTER);
 										label98.setName("label");
@@ -7790,21 +7790,21 @@ public class Reports extends JDialog {
 											((TableLayout)pnlBot43.getLayout()).setVGap(5);
 
 											//---- lblTestedBy43 ----
-											lblTestedBy43.setText("Tested By");
+											lblTestedBy43.setText("Tested");
 											lblTestedBy43.setFont(new Font("Arial", Font.PLAIN, 13));
 											lblTestedBy43.setHorizontalAlignment(SwingConstants.CENTER);
 											lblTestedBy43.setName("label");
 											pnlBot43.add(lblTestedBy43, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 											//---- label101 ----
-											label101.setText("Approved By");
+											label101.setText("Approved");
 											label101.setFont(new Font("Arial", Font.PLAIN, 13));
 											label101.setHorizontalAlignment(SwingConstants.CENTER);
 											label101.setName("label");
 											pnlBot43.add(label101, new TableLayoutConstraints(3, 2, 3, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 											//---- lblVerBy8 ----
-											lblVerBy8.setText("Verified By");
+											lblVerBy8.setText("Verified");
 											lblVerBy8.setFont(new Font("Arial", Font.PLAIN, 13));
 											lblVerBy8.setHorizontalAlignment(SwingConstants.CENTER);
 											lblVerBy8.setName("label");
@@ -8018,21 +8018,21 @@ public class Reports extends JDialog {
 									((TableLayout)pnlBot5.getLayout()).setVGap(5);
 
 									//---- lblTestedBy5 ----
-									lblTestedBy5.setText("Tested By");
+									lblTestedBy5.setText("Tested");
 									lblTestedBy5.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblTestedBy5.setHorizontalAlignment(SwingConstants.CENTER);
 									lblTestedBy5.setName("label");
 									pnlBot5.add(lblTestedBy5, new TableLayoutConstraints(1, 2, 1, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- lblVerBy7 ----
-									lblVerBy7.setText("Verified By");
+									lblVerBy7.setText("Verified");
 									lblVerBy7.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblVerBy7.setHorizontalAlignment(SwingConstants.CENTER);
 									lblVerBy7.setName("label");
 									pnlBot5.add(lblVerBy7, new TableLayoutConstraints(2, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- label104 ----
-									label104.setText("Approved By");
+									label104.setText("Approved");
 									label104.setFont(new Font("Arial", Font.PLAIN, 13));
 									label104.setHorizontalAlignment(SwingConstants.CENTER);
 									label104.setName("label");
@@ -9088,19 +9088,19 @@ public class Reports extends JDialog {
 									((TableLayout)pnlBot6_2.getLayout()).setVGap(5);
 
 									//---- lblTestedBy6 ----
-									lblTestedBy6.setText("Tested By");
+									lblTestedBy6.setText("Tested");
 									lblTestedBy6.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblTestedBy6.setHorizontalAlignment(SwingConstants.CENTER);
 									pnlBot6_2.add(lblTestedBy6, new TableLayoutConstraints(0, 1, 0, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- lblVerBy6 ----
-									lblVerBy6.setText("Verified By");
+									lblVerBy6.setText("Verified");
 									lblVerBy6.setFont(new Font("Arial", Font.PLAIN, 13));
 									lblVerBy6.setHorizontalAlignment(SwingConstants.CENTER);
 									pnlBot6_2.add(lblVerBy6, new TableLayoutConstraints(1, 1, 1, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 									//---- label109 ----
-									label109.setText("Approved By");
+									label109.setText("Approved");
 									label109.setFont(new Font("Arial", Font.PLAIN, 13));
 									label109.setHorizontalAlignment(SwingConstants.CENTER);
 									pnlBot6_2.add(label109, new TableLayoutConstraints(2, 1, 2, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
@@ -9464,6 +9464,42 @@ public class Reports extends JDialog {
 		lblVerBy13.setVisible(isVis);
 		lblVerBy14.setVisible(isVis);
 		
+		if (isVis && !Configuration.REP_SHOW_VERIFIED_BY_NAME.equals("")) {
+			String tmpString = "Verified [" + Configuration.REP_SHOW_VERIFIED_BY_NAME + "]";
+			lblVerBy6.setText(tmpString);
+			lblVerBy7.setText(tmpString);
+//			lblVerBy8.setText(tmpString);
+//			lblVerBy9.setText(tmpString);
+			lblVerBy10.setText(tmpString);
+			lblVerBy11.setText(tmpString);
+			lblVerBy12.setText(tmpString);
+			lblVerBy13.setText(tmpString);
+			lblVerBy14.setText(tmpString);
+		}
+
+		// approved by
+		boolean isVisA = Configuration.REP_SHOW_APPROVED_BY.equals("1");
+//		label102.setVisible(isVis);
+//		label23.setVisible(isVis);
+//		label103.setVisible(isVis);
+//		label67.setVisible(isVis);
+//		label98.setVisible(isVis);
+//		label101.setVisible(isVis);
+//		label104.setVisible(isVis);
+//		label109.setVisible(isVis);
+		
+		if (isVisA && !Configuration.REP_SHOW_APPROVED_BY_NAME.equals("")) {
+			String tmpString = "Approved [" + Configuration.REP_SHOW_APPROVED_BY_NAME + "]";
+			label102.setText(tmpString);
+			label23.setText(tmpString);
+			label103.setText(tmpString);
+			label67.setText(tmpString);
+//			label98.setText(tmpString);
+//			label101.setText(tmpString);
+			label104.setText(tmpString);
+			label109.setText(tmpString);
+		}
+	
 		// optional tests
 		if (Configuration.IS_SP_TEST_ON.equals("0")) {
 			pnlRep2.getLayout().removeLayoutComponent(pnlOptTest2);
@@ -10506,7 +10542,7 @@ public class Reports extends JDialog {
 					++r;
 				}
 				if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
-					lblTestedBy.setText("Tested By [" + usr.toUpperCase() + "]"); 
+					lblTestedBy.setText("Tested [" + usr.toUpperCase() + "]"); 
 				}
 			}
 		} catch (Exception sqle) {
@@ -10697,7 +10733,7 @@ public class Reports extends JDialog {
 				if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
 					MyResultSet res3 = db.executeQuery("select user from " + Configuration.READING_DETAIL + " where pump_type_id='" + curPumpTypeId + "' and pump_slno = '" + pumpNo + "' and rated_volt='" + tmpRtVolt +"'");
 					if (!pumpNo.isEmpty() && res3.next()) {
-						lblTestedBy42.setText("Tested By [" + res3.getString("user").toUpperCase() + "]");
+						lblTestedBy42.setText("Tested [" + res3.getString("user").toUpperCase() + "]");
 					}
 				}
 				
@@ -11477,7 +11513,7 @@ public class Reports extends JDialog {
 				if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
 					MyResultSet res3 = db.executeQuery("select user from " + Configuration.READING_DETAIL + " where pump_type_id='" + curPumpTypeId+ "' and pump_slno = '" + pumpNo + "' and rated_volt='" + tmpRtV +"'");
 					if (!pumpNo.isEmpty() && res3.next()) {
-						lblTestedBy43.setText("Tested By [" + res3.getString("user").toUpperCase() + "]");
+						lblTestedBy43.setText("Tested [" + res3.getString("user").toUpperCase() + "]");
 					}
 				}
 			} catch (Exception sqle) {
@@ -11555,7 +11591,7 @@ public class Reports extends JDialog {
 					
 					// footer
 					if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
-						lblTestedBy5.setText("Tested By [" + res.getString("user").toUpperCase() + "]"); // overwrite with last tested user
+						lblTestedBy5.setText("Tested [" + res.getString("user").toUpperCase() + "]"); // overwrite with last tested user
 					}
 					
 					// do perf calculation at rated freq 
@@ -11890,7 +11926,7 @@ public class Reports extends JDialog {
 					
 				}
 				if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
-					lblTestedBy6.setText("Tested By [" + usr.toUpperCase() + "]");
+					lblTestedBy6.setText("Tested [" + usr.toUpperCase() + "]");
 				}
 				
 				// custom input
@@ -12423,7 +12459,7 @@ public class Reports extends JDialog {
 					}*/
 					
 					if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
-						lblUser.setText("Tested By [" + res.getString("user").toUpperCase() + "]"); // overwrite with latest user
+						lblUser.setText("Tested [" + res.getString("user").toUpperCase() + "]"); // overwrite with latest user
 					}
 					++r;
 					
@@ -13481,7 +13517,7 @@ public class Reports extends JDialog {
 			} // res 2
 			// footer
 			if (Configuration.REP_SHOW_TESTER_NAME.equals("1")) {
-				lblUser.setText("Tested By [" + testUser.toUpperCase() + "]"); 
+				lblUser.setText("Tested [" + testUser.toUpperCase() + "]"); 
 			}
 		} // res 1
 		pnlGraph.revalidate();

@@ -53,6 +53,9 @@ public class OtherSettings extends JDialog {
 		Configuration.REP_SHOW_APP_WMARK = chkWMark.isSelected()?"1":"0";
 		Configuration.REP_SHOW_TESTER_NAME = chkTester.isSelected()?"1":"0";
 		Configuration.REP_SHOW_VERIFIED_BY = chkVerifBy.isSelected()?"1":"0";
+		Configuration.REP_SHOW_VERIFIED_BY_NAME = txtNameVerify.getText();
+		Configuration.REP_SHOW_APPROVED_BY = chkApprovBy.isSelected()?"1":"0";
+		Configuration.REP_SHOW_APPROVED_BY_NAME = txtNameApprove.getText();
 		Configuration.REP_SHOW_CASING_TEST = chkCasing.isSelected()?"1":"0";
 		Configuration.REP_CASTING_TEST_MIN = txtCastingMin.getText();
 		Configuration.REP_SHOW_MOT_EFF = chkMotEff.isSelected()?"1":"0";
@@ -63,7 +66,7 @@ public class OtherSettings extends JDialog {
 		Configuration.REP_NOTES_HEADING = txtNoteHead.getText();
 		Configuration.REP_NOTES_TEXT = txtNoteText.getText();
 		Configuration.REP_SHOW_MI_FOR_8472 = chkMIFor8472.isSelected()?"1":"0";
-		Configuration.saveConfigValues("REP_SHOW_APP_WMARK","REP_SHOW_TESTER_NAME","REP_SHOW_VERIFIED_BY","REP_SHOW_CASING_TEST","REP_CASTING_TEST_MIN", "REP_SHOW_MOT_EFF", "REP_SHOW_PUMP_EFF", "REP_SHOW_CUST_REP", "REP_SHOW_NOTES", "REP_NOTES_HEADING", "REP_NOTES_TEXT", "REP_SHOW_MI_FOR_8472");
+		Configuration.saveConfigValues("REP_SHOW_APP_WMARK","REP_SHOW_TESTER_NAME","REP_SHOW_VERIFIED_BY","REP_SHOW_VERIFIED_BY_NAME","REP_SHOW_APPROVED_BY","REP_SHOW_APPROVED_BY_NAME","REP_SHOW_CASING_TEST","REP_CASTING_TEST_MIN", "REP_SHOW_MOT_EFF", "REP_SHOW_PUMP_EFF", "REP_SHOW_CUST_REP", "REP_SHOW_NOTES", "REP_NOTES_HEADING", "REP_NOTES_TEXT", "REP_SHOW_MI_FOR_8472");
 		
 		// isi ref no.
 		// construct new list & save it in both db & license file if it got changed
@@ -115,23 +118,24 @@ public class OtherSettings extends JDialog {
 		Configuration.IS_MULTI_DB = optSingle.isSelected() ? "NO" : "YES";
 		Integer noOfLines = Integer.valueOf(Configuration.NUMBER_OF_LINES);
 		String tmpDBLoc = "";
-		if (noOfLines > 1) {
-			for(int i=0; i<noOfLines; i++) {
-				tmpDBLoc = ((JTextField)pnlMulti.getComponent(i*3+1)).getText().trim();
-				if (!tmpDBLoc.isEmpty()) {
-					tmpDbList += tmpDBLoc;
-					if (i < noOfLines-1) {
-						tmpDbList += ",";
-					}
-				} else {
-					this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					JOptionPane.showMessageDialog(this, "Please choose valid database for 'Line " + (i+1) + "'", "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-		}
+		
 		
 		if (!tmpIsMultiDB.equals(Configuration.IS_MULTI_DB) || !Configuration.APP_SINGLE_DB_NAME.equals(txtDB.getText()) || !Configuration.APP_DB_NAME_LIST.equals(tmpDbList)) {
+			if (noOfLines > 1) {
+				for(int i=0; i<noOfLines; i++) {
+					tmpDBLoc = ((JTextField)pnlMulti.getComponent(i*3+1)).getText().trim();
+					if (!tmpDBLoc.isEmpty()) {
+						tmpDbList += tmpDBLoc;
+						if (i < noOfLines-1) {
+							tmpDbList += ",";
+						}
+					} else {
+						this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+						JOptionPane.showMessageDialog(this, "Please choose valid database for 'Line " + (i+1) + "'", "Error", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+			}
 			try {
 				Configuration.APP_SINGLE_DB_NAME = txtDB.getText();
 				Configuration.APP_DB_NAME_LIST = tmpDbList;
@@ -282,6 +286,22 @@ public class OtherSettings extends JDialog {
 		optSingle();
 	}
 
+	private void chkVerifBy(ActionEvent e) {
+		if(chkVerifBy.isSelected()) {
+			txtNameVerify.setEditable(true);
+		}else {
+			txtNameVerify.setEditable(false);
+		}
+	}
+
+	private void chkApprovBy(ActionEvent e) {
+		if(chkApprovBy.isSelected()) {
+			txtNameApprove.setEditable(true);
+		}else {
+			txtNameApprove.setEditable(false);
+		}
+	}
+
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
 		tabSet = new JTabbedPane();
@@ -289,18 +309,22 @@ public class OtherSettings extends JDialog {
 		chkWMark = new JCheckBox();
 		chkCasing = new JCheckBox();
 		txtCastingMin = new JTextField();
-		chkTester = new JCheckBox();
-		chkPumpEff = new JCheckBox();
-		chkVerifBy = new JCheckBox();
-		chkMotEff = new JCheckBox();
 		chkNote = new JCheckBox();
-		chkMIFor8472 = new JCheckBox();
+		chkPumpEff = new JCheckBox();
 		chkCustRep = new JCheckBox();
+		chkMotEff = new JCheckBox();
+		chkMIFor8472 = new JCheckBox();
 		lblNoteHead = new JLabel();
 		txtNoteHead = new JTextField();
 		lblNoteText = new JLabel();
 		txtNoteText = new JTextField();
 		separator1 = new JSeparator();
+		chkTester = new JCheckBox();
+		chkVerifBy = new JCheckBox();
+		txtNameVerify = new JTextField();
+		chkApprovBy = new JCheckBox();
+		txtNameApprove = new JTextField();
+		separator2 = new JSeparator();
 		label5 = new JLabel();
 		txtISIRef = new JTextField();
 		label4 = new JLabel();
@@ -352,8 +376,8 @@ public class OtherSettings extends JDialog {
 				pnlRep.setBorder(new TitledBorder(null, "Report []", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION,
 					new Font("Arial", Font.BOLD, 14), Color.blue));
 				pnlRep.setLayout(new TableLayout(new double[][] {
-					{5, TableLayout.FILL, TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL, TableLayout.FILL},
-					{5, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 5, TableLayout.PREFERRED}}));
+					{5, TableLayout.FILL, 101, TableLayout.PREFERRED, TableLayout.FILL, TableLayout.FILL},
+					{5, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.PREFERRED, 3, TableLayout.PREFERRED, TableLayout.PREFERRED, 5, TableLayout.PREFERRED}}));
 				((TableLayout)pnlRep.getLayout()).setHGap(5);
 				((TableLayout)pnlRep.getLayout()).setVGap(5);
 
@@ -378,10 +402,11 @@ public class OtherSettings extends JDialog {
 				});
 				pnlRep.add(txtCastingMin, new TableLayoutConstraints(5, 1, 5, 1, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-				//---- chkTester ----
-				chkTester.setText("Show Tester Name In Tested By");
-				chkTester.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(chkTester, new TableLayoutConstraints(1, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				//---- chkNote ----
+				chkNote.setText("Show Note");
+				chkNote.setFont(new Font("Arial", Font.BOLD, 12));
+				chkNote.addActionListener(e -> chkNoteActionPerformed());
+				pnlRep.add(chkNote, new TableLayoutConstraints(1, 2, 2, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- chkPumpEff ----
 				chkPumpEff.setText("Show Pump Efficiency In Performance Report");
@@ -389,21 +414,15 @@ public class OtherSettings extends JDialog {
 				chkPumpEff.addItemListener(e -> chkPumpEffItemStateChanged());
 				pnlRep.add(chkPumpEff, new TableLayoutConstraints(3, 2, 5, 2, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-				//---- chkVerifBy ----
-				chkVerifBy.setText("Show Verified By");
-				chkVerifBy.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(chkVerifBy, new TableLayoutConstraints(1, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				//---- chkCustRep ----
+				chkCustRep.setText("Show Custom Report Tab");
+				chkCustRep.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkCustRep, new TableLayoutConstraints(1, 3, 2, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- chkMotEff ----
 				chkMotEff.setText("Show Motor Efficiency In Name Plate Details");
 				chkMotEff.setFont(new Font("Arial", Font.BOLD, 12));
 				pnlRep.add(chkMotEff, new TableLayoutConstraints(3, 3, 5, 3, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
-				//---- chkNote ----
-				chkNote.setText("Show Note");
-				chkNote.setFont(new Font("Arial", Font.BOLD, 12));
-				chkNote.addActionListener(e -> chkNoteActionPerformed());
-				pnlRep.add(chkNote, new TableLayoutConstraints(1, 4, 2, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- chkMIFor8472 ----
 				chkMIFor8472.setText("Show Motor Input (kW) In Graph & Result For 8472");
@@ -411,15 +430,10 @@ public class OtherSettings extends JDialog {
 				chkMIFor8472.addActionListener(e -> chkNoteActionPerformed());
 				pnlRep.add(chkMIFor8472, new TableLayoutConstraints(3, 4, 5, 4, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
-				//---- chkCustRep ----
-				chkCustRep.setText("Show Custom Report Tab");
-				chkCustRep.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(chkCustRep, new TableLayoutConstraints(1, 5, 3, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-
 				//---- lblNoteHead ----
 				lblNoteHead.setText("Note Heading");
 				lblNoteHead.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(lblNoteHead, new TableLayoutConstraints(1, 6, 1, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(lblNoteHead, new TableLayoutConstraints(1, 5, 1, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- txtNoteHead ----
 				txtNoteHead.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -429,12 +443,12 @@ public class OtherSettings extends JDialog {
 						txtISIRefFocusLost();
 					}
 				});
-				pnlRep.add(txtNoteHead, new TableLayoutConstraints(2, 6, 4, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(txtNoteHead, new TableLayoutConstraints(2, 5, 4, 5, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- lblNoteText ----
 				lblNoteText.setText("Note Text");
 				lblNoteText.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(lblNoteText, new TableLayoutConstraints(1, 7, 1, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(lblNoteText, new TableLayoutConstraints(1, 6, 1, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- txtNoteText ----
 				txtNoteText.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -444,13 +458,53 @@ public class OtherSettings extends JDialog {
 						txtISIRefFocusLost();
 					}
 				});
-				pnlRep.add(txtNoteText, new TableLayoutConstraints(2, 7, 4, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
-				pnlRep.add(separator1, new TableLayoutConstraints(1, 8, 5, 8, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(txtNoteText, new TableLayoutConstraints(2, 6, 4, 6, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(separator1, new TableLayoutConstraints(1, 7, 5, 7, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkTester ----
+				chkTester.setText("Show Tester Name In Tested By");
+				chkTester.setFont(new Font("Arial", Font.BOLD, 12));
+				pnlRep.add(chkTester, new TableLayoutConstraints(1, 8, 2, 8, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkVerifBy ----
+				chkVerifBy.setText("Show Verified By With Name");
+				chkVerifBy.setFont(new Font("Arial", Font.BOLD, 12));
+				chkVerifBy.addActionListener(e -> chkVerifBy(e));
+				pnlRep.add(chkVerifBy, new TableLayoutConstraints(3, 8, 4, 8, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtNameVerify ----
+				txtNameVerify.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtNameVerify.setToolTipText("ISI registration license number of particular ISI standard");
+				txtNameVerify.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtNameVerify, new TableLayoutConstraints(5, 8, 5, 8, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- chkApprovBy ----
+				chkApprovBy.setText("Show Approved By With Name");
+				chkApprovBy.setFont(new Font("Arial", Font.BOLD, 12));
+				chkApprovBy.addActionListener(e -> chkApprovBy(e));
+				pnlRep.add(chkApprovBy, new TableLayoutConstraints(3, 9, 4, 9, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+
+				//---- txtNameApprove ----
+				txtNameApprove.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+				txtNameApprove.setToolTipText("ISI registration license number of particular ISI standard");
+				txtNameApprove.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						txtISIRefFocusLost();
+					}
+				});
+				pnlRep.add(txtNameApprove, new TableLayoutConstraints(5, 9, 5, 9, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(separator2, new TableLayoutConstraints(1, 10, 5, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- label5 ----
 				label5.setText("ISI License Number");
 				label5.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(label5, new TableLayoutConstraints(1, 10, 1, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(label5, new TableLayoutConstraints(1, 11, 1, 11, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- txtISIRef ----
 				txtISIRef.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
@@ -461,23 +515,23 @@ public class OtherSettings extends JDialog {
 						txtISIRefFocusLost();
 					}
 				});
-				pnlRep.add(txtISIRef, new TableLayoutConstraints(2, 10, 2, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(txtISIRef, new TableLayoutConstraints(2, 11, 2, 11, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- label4 ----
 				label4.setText("For ISI Standard");
 				label4.setFont(new Font("Arial", Font.BOLD, 12));
-				pnlRep.add(label4, new TableLayoutConstraints(3, 10, 3, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(label4, new TableLayoutConstraints(3, 11, 3, 11, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- cmbIS ----
 				cmbIS.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
 				cmbIS.addActionListener(e -> cmbISActionPerformed());
-				pnlRep.add(cmbIS, new TableLayoutConstraints(4, 10, 4, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(cmbIS, new TableLayoutConstraints(4, 11, 4, 11, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 
 				//---- label13 ----
 				label13.setText("[All Assembly Lines]");
 				label13.setFont(new Font("Arial", Font.BOLD, 12));
 				label13.setForeground(Color.blue);
-				pnlRep.add(label13, new TableLayoutConstraints(5, 10, 5, 10, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
+				pnlRep.add(label13, new TableLayoutConstraints(5, 11, 5, 11, TableLayoutConstraints.FULL, TableLayoutConstraints.FULL));
 			}
 			tabSet.addTab("Reports", pnlRep);
 
@@ -681,18 +735,22 @@ public class OtherSettings extends JDialog {
 	private JCheckBox chkWMark;
 	private JCheckBox chkCasing;
 	private JTextField txtCastingMin;
-	private JCheckBox chkTester;
-	private JCheckBox chkPumpEff;
-	private JCheckBox chkVerifBy;
-	private JCheckBox chkMotEff;
 	private JCheckBox chkNote;
-	private JCheckBox chkMIFor8472;
+	private JCheckBox chkPumpEff;
 	private JCheckBox chkCustRep;
+	private JCheckBox chkMotEff;
+	private JCheckBox chkMIFor8472;
 	private JLabel lblNoteHead;
 	private JTextField txtNoteHead;
 	private JLabel lblNoteText;
 	private JTextField txtNoteText;
 	private JSeparator separator1;
+	private JCheckBox chkTester;
+	private JCheckBox chkVerifBy;
+	private JTextField txtNameVerify;
+	private JCheckBox chkApprovBy;
+	private JTextField txtNameApprove;
+	private JSeparator separator2;
 	private JLabel label5;
 	private JTextField txtISIRef;
 	private JLabel label4;
@@ -748,6 +806,9 @@ public class OtherSettings extends JDialog {
 		chkWMark.setSelected(Configuration.REP_SHOW_APP_WMARK.equals("1"));
 		chkTester.setSelected(Configuration.REP_SHOW_TESTER_NAME.equals("1"));
 		chkVerifBy.setSelected(Configuration.REP_SHOW_VERIFIED_BY.equals("1"));
+		txtNameVerify.setText(Configuration.REP_SHOW_VERIFIED_BY_NAME);
+		chkApprovBy.setSelected(Configuration.REP_SHOW_APPROVED_BY.equals("1"));
+		txtNameApprove.setText(Configuration.REP_SHOW_APPROVED_BY_NAME);
 		chkCasing.setSelected(Configuration.REP_SHOW_CASING_TEST.equals("1"));
 		txtCastingMin.setText(Configuration.REP_CASTING_TEST_MIN);
 		chkCustRep.setSelected(Configuration.REP_SHOW_CUST_REP.equals("1"));
@@ -757,6 +818,16 @@ public class OtherSettings extends JDialog {
 		chkMIFor8472.setSelected(Configuration.REP_SHOW_MI_FOR_8472.equals("1"));
 		chkNoteActionPerformed();
 		
+		if(chkApprovBy.isSelected()) {
+			txtNameApprove.setEditable(true);
+		}else {
+			txtNameApprove.setEditable(false);
+		}
+		if(chkVerifBy.isSelected()) {
+			txtNameVerify.setEditable(true);
+		}else {
+			txtNameVerify.setEditable(false);
+		}
 		
 		// set ISI ref based on ISSTD selection
 		String[]isList = Configuration.ISSTD_LIST.split(",");

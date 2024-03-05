@@ -3336,9 +3336,9 @@ public class PumpView extends JFrame {
 							curStation.curOtherVoltsDis = res.getString("other_volts_disabled");
 							Configuration.OP_PUMP_TYPE.put(curStation.stationName, res.getString("type"));
 							
-							// write parameter value to the VFD Drive
+							// write parameter value to the VFD Drive	
 							if(Configuration.IS_VFD) {
-								String convFact = "1";
+								String convFact = "*1";
 								
 								try {
 									MyResultSet res1 = db.executeQuery("select a.* from DEVICE_PARAM a JOIN DEVICE b on b.dev_id=a.dev_id where b.dev_name = 'VFD'");
@@ -3352,6 +3352,7 @@ public class PumpView extends JFrame {
 										}else{
 											curStation.writeSingleParamValue(res1.getString("param_name"), (Integer.parseInt( jsEng.eval(res.getString("freq") + convFact).toString())));
 										}
+										convFact = "*1";
 									}
 								} catch (Exception e) {
 									JOptionPane.showMessageDialog(this, "Error while writing the value to the Drive" + e.getMessage());

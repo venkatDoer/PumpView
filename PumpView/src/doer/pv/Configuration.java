@@ -99,6 +99,9 @@ public class Configuration {
 	public static String REP_NOTES_TEXT = "Your note goes here";
 	public static String REP_SHOW_TESTER_NAME = "1";
 	public static String REP_SHOW_VERIFIED_BY = "1";
+	public static String REP_SHOW_VERIFIED_BY_NAME = "";
+	public static String REP_SHOW_APPROVED_BY = "1";
+	public static String REP_SHOW_APPROVED_BY_NAME = "";
 	public static String REP_SHOW_PUMP_EFF = "0";
 	public static String REP_SHOW_MOT_EFF = "1";
 	public static String REP_SHOW_CUST_REP = "0";
@@ -231,6 +234,9 @@ public class Configuration {
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_NOTES_TEXT','" + REP_NOTES_TEXT + "')");
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_TESTER_NAME','" + REP_SHOW_TESTER_NAME + "')");
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_VERIFIED_BY','" + REP_SHOW_VERIFIED_BY + "')");
+				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_VERIFIED_BY_NAME','" + REP_SHOW_VERIFIED_BY_NAME + "')");
+				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_APPROVED_BY','" + REP_SHOW_APPROVED_BY + "')");
+				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_APPROVED_BY_NAME','" + REP_SHOW_APPROVED_BY_NAME + "')");
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_PUMP_EFF','" + REP_SHOW_PUMP_EFF + "')");
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_CUST_REP','" + REP_SHOW_CUST_REP + "')");
 				db.executeUpdate("insert into CONFIG values ('" + LINE_NAME + "','REP_SHOW_MI_FOR_8472','" + REP_SHOW_MI_FOR_8472 + "')");

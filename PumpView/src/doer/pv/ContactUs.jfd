@@ -200,7 +200,7 @@
           <string>javax.swing.JLabel</string>
           <void method="setProperty">
            <string>text</string>
-           <string>Version 2.0 Build 20240301</string>
+           <string>Version 2.0 Build 20240305</string>
           </void>
           <void property="name">
            <string>label18</string>

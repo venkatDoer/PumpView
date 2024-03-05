@@ -72,11 +72,11 @@
            <class>info.clearthought.layout.TableLayout</class>
            <void method="setProperty">
             <string>$columnSpecs</string>
-            <string>5.0, fill, fill, pref, fill, fill</string>
+            <string>5.0, fill, 101.0, pref, fill, fill</string>
            </void>
            <void method="setProperty">
             <string>$rowSpecs</string>
-            <string>5.0, pref, pref, pref, pref, pref, pref, pref, pref, 5.0, pref</string>
+            <string>5.0, pref, pref, pref, pref, pref, pref, 3.0, pref, pref, 5.0, pref</string>
            </void>
            <void method="setProperty">
             <string>hGap</string>
@@ -176,7 +176,7 @@
             <string>javax.swing.JTextField</string>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font">
+             <object class="java.awt.Font" id="Font2">
               <string>SansSerif</string>
               <int>0</int>
               <int>12</int>
@@ -215,14 +215,22 @@
             <string>javax.swing.JCheckBox</string>
             <void method="setProperty">
              <string>text</string>
-             <string>Show Tester Name In Tested By</string>
+             <string>Show Note</string>
             </void>
             <void method="setProperty">
              <string>font</string>
              <object idref="Font1"/>
             </void>
             <void property="name">
-             <string>chkTester</string>
+             <string>chkNote</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.ActionListener</string>
+              <string>actionPerformed</string>
+              <string>chkNoteActionPerformed</string>
+              <boolean>false</boolean>
+             </object>
             </void>
            </object>
            <object class="com.jformdesigner.model.FormLayoutConstraints">
@@ -285,14 +293,14 @@
             <string>javax.swing.JCheckBox</string>
             <void method="setProperty">
              <string>text</string>
-             <string>Show Verified By</string>
+             <string>Show Custom Report Tab</string>
             </void>
             <void method="setProperty">
              <string>font</string>
              <object idref="Font1"/>
             </void>
             <void property="name">
-             <string>chkVerifBy</string>
+             <string>chkCustRep</string>
             </void>
            </object>
            <object class="com.jformdesigner.model.FormLayoutConstraints">
@@ -347,45 +355,6 @@
             <string>javax.swing.JCheckBox</string>
             <void method="setProperty">
              <string>text</string>
-             <string>Show Note</string>
-            </void>
-            <void method="setProperty">
-             <string>font</string>
-             <object idref="Font1"/>
-            </void>
-            <void property="name">
-             <string>chkNote</string>
-            </void>
-            <void method="addEvent">
-             <object class="com.jformdesigner.model.FormEvent">
-              <string>java.awt.event.ActionListener</string>
-              <string>actionPerformed</string>
-              <string>chkNoteActionPerformed</string>
-              <boolean>false</boolean>
-             </object>
-            </void>
-           </object>
-           <object class="com.jformdesigner.model.FormLayoutConstraints">
-            <class>com.jformdesigner.runtime.TableConstraints</class>
-            <void method="setProperty">
-             <string>gridY</string>
-             <int>4</int>
-            </void>
-            <void method="setProperty">
-             <string>gridX</string>
-             <int>1</int>
-            </void>
-            <void method="setProperty">
-             <string>gridWidth</string>
-             <int>2</int>
-            </void>
-           </object>
-          </void>
-          <void method="add">
-           <object class="com.jformdesigner.model.FormComponent">
-            <string>javax.swing.JCheckBox</string>
-            <void method="setProperty">
-             <string>text</string>
              <string>Show Motor Input (kW) In Graph &amp; Result For 8472</string>
             </void>
             <void method="setProperty">
@@ -426,37 +395,6 @@
           </void>
           <void method="add">
            <object class="com.jformdesigner.model.FormComponent">
-            <string>javax.swing.JCheckBox</string>
-            <void method="setProperty">
-             <string>text</string>
-             <string>Show Custom Report Tab</string>
-            </void>
-            <void method="setProperty">
-             <string>font</string>
-             <object idref="Font1"/>
-            </void>
-            <void property="name">
-             <string>chkCustRep</string>
-            </void>
-           </object>
-           <object class="com.jformdesigner.model.FormLayoutConstraints">
-            <class>com.jformdesigner.runtime.TableConstraints</class>
-            <void method="setProperty">
-             <string>gridY</string>
-             <int>5</int>
-            </void>
-            <void method="setProperty">
-             <string>gridX</string>
-             <int>1</int>
-            </void>
-            <void method="setProperty">
-             <string>gridWidth</string>
-             <int>3</int>
-            </void>
-           </object>
-          </void>
-          <void method="add">
-           <object class="com.jformdesigner.model.FormComponent">
             <string>javax.swing.JLabel</string>
             <void method="setProperty">
              <string>text</string>
@@ -464,7 +402,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font2">
+             <object class="java.awt.Font" id="Font3">
               <string>Arial</string>
               <int>1</int>
               <int>12</int>
@@ -478,7 +416,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>6</int>
+             <int>5</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -491,7 +429,7 @@
             <string>javax.swing.JTextField</string>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font3">
+             <object class="java.awt.Font" id="Font4">
               <string>SansSerif</string>
               <int>0</int>
               <int>12</int>
@@ -513,7 +451,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>6</int>
+             <int>5</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -534,7 +472,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font2"/>
+             <object idref="Font3"/>
             </void>
             <void property="name">
              <string>lblNoteText</string>
@@ -544,7 +482,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>7</int>
+             <int>6</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -557,7 +495,7 @@
             <string>javax.swing.JTextField</string>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font3"/>
+             <object idref="Font4"/>
             </void>
             <void property="name">
              <string>txtNoteText</string>
@@ -575,7 +513,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>7</int>
+             <int>6</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -602,11 +540,213 @@
             </void>
             <void method="setProperty">
              <string>gridY</string>
-             <int>8</int>
+             <int>7</int>
             </void>
             <void method="setProperty">
              <string>gridWidth</string>
              <int>5</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JCheckBox</string>
+            <void method="setProperty">
+             <string>text</string>
+             <string>Show Tester Name In Tested By</string>
+            </void>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font1"/>
+            </void>
+            <void property="name">
+             <string>chkTester</string>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>8</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>1</int>
+            </void>
+            <void method="setProperty">
+             <string>gridWidth</string>
+             <int>2</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JCheckBox</string>
+            <void method="setProperty">
+             <string>text</string>
+             <string>Show Verified By With Name</string>
+            </void>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font1"/>
+            </void>
+            <void property="name">
+             <string>chkVerifBy</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.ActionListener</string>
+              <string>actionPerformed</string>
+              <string>chkVerifBy</string>
+              <boolean>true</boolean>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>8</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>3</int>
+            </void>
+            <void method="setProperty">
+             <string>gridWidth</string>
+             <int>2</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JTextField</string>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font2"/>
+            </void>
+            <void method="setProperty">
+             <string>toolTipText</string>
+             <string>ISI registration license number of particular ISI standard</string>
+            </void>
+            <void property="name">
+             <string>txtNameVerify</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.FocusListener</string>
+              <string>focusLost</string>
+              <string>txtISIRefFocusLost</string>
+              <boolean>false</boolean>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>8</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>5</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JCheckBox</string>
+            <void method="setProperty">
+             <string>text</string>
+             <string>Show Approved By With Name</string>
+            </void>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font1"/>
+            </void>
+            <void property="name">
+             <string>chkApprovBy</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.ActionListener</string>
+              <string>actionPerformed</string>
+              <string>chkApprovBy</string>
+              <boolean>true</boolean>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>9</int>
+            </void>
+            <void method="setProperty">
+             <string>gridWidth</string>
+             <int>2</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>3</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JTextField</string>
+            <void method="setProperty">
+             <string>font</string>
+             <object idref="Font2"/>
+            </void>
+            <void method="setProperty">
+             <string>toolTipText</string>
+             <string>ISI registration license number of particular ISI standard</string>
+            </void>
+            <void property="name">
+             <string>txtNameApprove</string>
+            </void>
+            <void method="addEvent">
+             <object class="com.jformdesigner.model.FormEvent">
+              <string>java.awt.event.FocusListener</string>
+              <string>focusLost</string>
+              <string>txtISIRefFocusLost</string>
+              <boolean>false</boolean>
+             </object>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>9</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>5</int>
+            </void>
+           </object>
+          </void>
+          <void method="add">
+           <object class="com.jformdesigner.model.FormComponent">
+            <string>javax.swing.JSeparator</string>
+            <void property="name">
+             <string>separator2</string>
+            </void>
+           </object>
+           <object class="com.jformdesigner.model.FormLayoutConstraints">
+            <class>com.jformdesigner.runtime.TableConstraints</class>
+            <void method="setProperty">
+             <string>gridY</string>
+             <int>10</int>
+            </void>
+            <void method="setProperty">
+             <string>gridWidth</string>
+             <int>5</int>
+            </void>
+            <void method="setProperty">
+             <string>gridX</string>
+             <int>1</int>
             </void>
            </object>
           </void>
@@ -619,7 +759,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font2"/>
+             <object idref="Font3"/>
             </void>
             <void property="name">
              <string>label5</string>
@@ -629,7 +769,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>10</int>
+             <int>11</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -642,7 +782,7 @@
             <string>javax.swing.JTextField</string>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font3"/>
+             <object idref="Font4"/>
             </void>
             <void method="setProperty">
              <string>toolTipText</string>
@@ -668,7 +808,7 @@
             </void>
             <void method="setProperty">
              <string>gridY</string>
-             <int>10</int>
+             <int>11</int>
             </void>
            </object>
           </void>
@@ -681,7 +821,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font2"/>
+             <object idref="Font3"/>
             </void>
             <void property="name">
              <string>label4</string>
@@ -691,7 +831,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>10</int>
+             <int>11</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -730,7 +870,7 @@
             </void>
             <void method="setProperty">
              <string>gridY</string>
-             <int>10</int>
+             <int>11</int>
             </void>
            </object>
           </void>
@@ -743,7 +883,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font2"/>
+             <object idref="Font3"/>
             </void>
             <void method="setProperty">
              <string>foreground</string>
@@ -757,7 +897,7 @@
             <class>com.jformdesigner.runtime.TableConstraints</class>
             <void method="setProperty">
              <string>gridY</string>
-             <int>10</int>
+             <int>11</int>
             </void>
             <void method="setProperty">
              <string>gridX</string>
@@ -823,7 +963,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font4">
+             <object class="java.awt.Font" id="Font5">
               <string>Arial</string>
               <int>1</int>
               <int>12</int>
@@ -910,7 +1050,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font4"/>
+             <object idref="Font5"/>
             </void>
             <void method="setProperty">
              <string>icon</string>
@@ -988,7 +1128,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font5">
+             <object class="java.awt.Font" id="Font6">
               <string>Arial</string>
               <int>1</int>
               <int>12</int>
@@ -1023,7 +1163,7 @@
             <string>javax.swing.JTextField</string>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font6">
+             <object class="java.awt.Font" id="Font7">
               <string>SansSerif</string>
               <int>0</int>
               <int>12</int>
@@ -1083,7 +1223,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font7">
+             <object class="java.awt.Font" id="Font8">
               <string>Arial</string>
               <int>0</int>
               <int>12</int>
@@ -1126,7 +1266,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font5"/>
+             <object idref="Font6"/>
             </void>
             <void method="setProperty">
              <string>icon</string>
@@ -1161,7 +1301,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object class="java.awt.Font" id="Font8">
+             <object class="java.awt.Font" id="Font9">
               <string>SansSerif</string>
               <int>0</int>
               <int>12</int>
@@ -1200,7 +1340,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font7"/>
+             <object idref="Font8"/>
             </void>
             <void method="setProperty">
              <string>toolTipText</string>
@@ -1239,7 +1379,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font5"/>
+             <object idref="Font6"/>
             </void>
             <void method="setProperty">
              <string>icon</string>
@@ -1274,7 +1414,7 @@
             </void>
             <void method="setProperty">
              <string>font</string>
-             <object idref="Font8"/>
+             <object idref="Font9"/>
             </void>
             <void method="setProperty">
              <string>icon</string>
@@ -1379,7 +1519,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object class="java.awt.Font" id="Font9">
+               <object class="java.awt.Font" id="Font10">
                 <string>Arial</string>
                 <int>1</int>
                 <int>12</int>
@@ -1424,7 +1564,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font9"/>
+               <object idref="Font10"/>
               </void>
               <void method="setProperty">
                <string>$buttonGroup</string>
@@ -1494,7 +1634,7 @@
               <string>Single Database For All Lines</string>
               <int>4</int>
               <int>0</int>
-              <object class="java.awt.Font" id="Font10">
+              <object class="java.awt.Font" id="Font11">
                <string>Arial</string>
                <int>1</int>
                <int>12</int>
@@ -1514,7 +1654,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font5"/>
+               <object idref="Font6"/>
               </void>
               <void method="setProperty">
                <string>icon</string>
@@ -1537,7 +1677,7 @@
               <string>javax.swing.JTextField</string>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font6"/>
+               <object idref="Font7"/>
               </void>
               <void method="setProperty">
                <string>border</string>
@@ -1577,7 +1717,7 @@
               </void>
               <void method="setProperty">
                <string>font</string>
-               <object idref="Font7"/>
+               <object idref="Font8"/>
               </void>
               <void property="name">
                <string>cmdChangeDB</string>
@@ -1637,7 +1777,7 @@
               <string>Multiple Databases (Seperate Database For Each Line)</string>
               <int>4</int>
               <int>0</int>
-              <object idref="Font10"/>
+              <object idref="Font11"/>
               <object class="java.awt.Color" field="blue"/>
              </object>
             </void>
@@ -1692,7 +1832,7 @@
         </void>
         <void method="setProperty">
          <string>font</string>
-         <object class="java.awt.Font" id="Font11">
+         <object class="java.awt.Font" id="Font12">
           <string>Arial</string>
           <int>0</int>
           <int>14</int>
@@ -1746,7 +1886,7 @@
         </void>
         <void method="setProperty">
          <string>font</string>
-         <object idref="Font11"/>
+         <object idref="Font12"/>
         </void>
         <void method="setProperty">
          <string>icon</string>

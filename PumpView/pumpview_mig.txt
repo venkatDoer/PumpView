@@ -79,7 +79,14 @@ alter table pumptype_9079 drop column recent_test_sno;
 alter table DEVICE add column comm_protocol text;
 alter table DEVICE add column ip_address text;
 alter table DEVICE add column ip_port text;
-alter table DEVICE add column is_vfd text;
-insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'VFD', 'NA', '', 'M', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'true', 'RTU', '', '2200')"
-insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (, 'VDF Voltage', 'NA', '', '', 'NA')
-insert into DEVICE_PARAM(dev_id, param_name, param_adr, conv_factor, format_text, reg_type) values (, 'VDF Frequency', 'NA', '', '', 'NA')
+alter table PUMPTYPE add column is_vfd text;
+insert into DEVICE(line, station_no, dev_name, dev_adr, dev_port, dev_type, baud_rt, data_bits, stop_bits, parity, wc, endianness, fc, ip_cmd, is_in_use, is_common_port, comm_protocol, ip_address, ip_port) values ('" + Configuration.LINE_NAME + "', '" + stationId + "', 'VFD', 'NA', '', 'M', 9600, 8, 1, 0, 0, '', 0, '', 'false', 'true', 'RTU', '', '2200');
+insert into DEVICE_PARAM(8, param_name, param_adr, conv_factor, format_text, reg_type) values (, 'VDF Voltage', 'NA', '', '', 'NA');
+insert into DEVICE_PARAM(8, param_name, param_adr, conv_factor, format_text, reg_type) values (, 'VDF Frequency', 'NA', '', '', 'NA');
+
+/* 05-03-2024 - Add Approved_by and Verified_by (name) in the report
+insert into CONFIG values ('" + Line ? + "','REP_SHOW_VERIFIED_BY_NAME','');
+insert into CONFIG values ('" + Line ? + "','REP_SHOW_APPROVED_BY','1');
+insert into CONFIG values ('" + Line ? + "','REP_SHOW_APPROVED_BY_NAME','');
+
+
